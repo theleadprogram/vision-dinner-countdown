@@ -1,0 +1,70 @@
+{
+  "dinner": "LEAD Africa Vision Dinner",
+  "label": "March 2027",
+  "dinner_date": "2027-03-06",
+  "date_status": "Working date; may move once the venue is confirmed.",
+  "adjustments": [
+    {
+      "type": "off_week",
+      "week": 10,
+      "reason": "Christmas (Dec 26, 2026)",
+      "move_tasks_to_week": 13,
+      "tasks": [
+        "produce-the-ministry-update-video-3-min",
+        "plan-the-creative-pieces",
+        "plan-the-reception"
+      ]
+    }
+  ],
+  "monday": {
+    "workspace": {
+      "name": "Fundraising",
+      "id": 17946146
+    },
+    "folder": {
+      "name": "Vision Dinner – March 2027",
+      "id": 21599326
+    },
+    "boards": {
+      "countdown": {
+        "name": "Vision Dinner Countdown – March 2027",
+        "id": 18434832539,
+        "url": "https://the-lead-program.monday.com/boards/18434832539",
+        "columns": {
+          "status": "color_mm7zhp81",
+          "owner": "multiple_person_mm7z1z6q",
+          "role": "dropdown_mm7zjnh8",
+          "due": "date_mm7zghq",
+          "weeks_out": "numeric_mm7z3986",
+          "area": "color_mm7zef6e",
+          "details": "long_text_mm7zdtbf"
+        },
+        "groups_by_weeks_out": {
+          "21": "group_mm7zwff6",
+          "20": "group_mm7zv29d",
+          "19": "group_mm7zca29",
+          "18": "group_mm7z1zxt",
+          "17": "group_mm7zr0sj",
+          "16": "group_mm7zf4s8",
+          "15": "group_mm7zax1b",
+          "14": "group_mm7zm523",
+          "13": "group_mm7z6xaz",
+          "12": "group_mm7zfq5r",
+          "11": "group_mm7z2rj",
+          "10": "group_mm7ztd6d",
+          "9": "group_mm7zrd1r",
+          "8": "group_mm7zggf4",
+          "7": "group_mm7zdz0s",
+          "6": "group_mm7zvqce",
+          "5": "group_mm7zme0c",
+          "4": "group_mm7zat2s",
+          "3": "group_mm7zrn7t",
+          "2": "group_mm7zkcca",
+          "1": "group_mm7z2vty",
+          "0": "group_mm7zmgbd",
+          "-1": "group_mm7zv0yr"
+        }
+      }
+    }
+  }
+}

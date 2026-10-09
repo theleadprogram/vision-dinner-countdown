@@ -1,0 +1,1438 @@
+{
+  "name": "Vision Dinner Countdown",
+  "source": "Fundraising Masterminds Perfect Vision Dinner model, with LEAD settled standards (see the playbook).",
+  "date_rule": "Due date = dinner_date + offset_days. If offset_days is missing, it is -7 × weeks_out.",
+  "groups": {
+    "weeks": "Weeks 21 to 1, titled 'Week N · <Mon D>' using dinner_date - 7N days",
+    "0": "Dinner Week",
+    "-1": "Week After"
+  },
+  "areas": [
+    "Strategy & Team",
+    "Venue & Catering",
+    "Table Leaders",
+    "Program & Speakers",
+    "Giving & Appeal",
+    "Marketing & Mail",
+    "Registration & Tech",
+    "Night-of",
+    "Gratitude & Follow-up"
+  ],
+  "roles": [
+    "Executive Director",
+    "Overall Dinner Coordinator",
+    "Table Leader Coordinator",
+    "Registration Coordinator",
+    "D.O.V.E.",
+    "Appeal Speaker",
+    "Calling Team"
+  ],
+  "tasks": [
+    {
+      "id": "set-the-dinner-goal-and-guest-target",
+      "name": "Set the dinner goal and guest target",
+      "weeks_out": 21,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Pick a guest target (e.g., 150) and a giving goal. First-dinner benchmark: a $25K match pool supports about a $100K goal."
+    },
+    {
+      "id": "run-the-table-leader-math",
+      "name": "Run the Table Leader math",
+      "weeks_out": 21,
+      "area": "Table Leaders",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Guests ÷ 10 = tables; × 2 = Table Leaders to recruit; × 3 = names to name-storm. 150 guests → 15 tables → 30 Table Leaders → 90 names."
+    },
+    {
+      "id": "schedule-the-name-storming-party",
+      "name": "Schedule the name-storming party",
+      "weeks_out": 21,
+      "area": "Table Leaders",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "About 90 minutes. Invite staff, board, volunteers, donors, past Table Leaders and networkers. Hold it Week 19."
+    },
+    {
+      "id": "draft-the-5-year-dream-vision-and-3-5-smart-goals",
+      "name": "Draft the 5-Year Dream Vision and 3–5 SMART goals",
+      "weeks_out": 21,
+      "area": "Program & Speakers",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Feeds the accelerators (Week 11). Core values, dream vision 'if finances were not a problem', estimated cost, then SMART goals."
+    },
+    {
+      "id": "start-a-matching-gift-prospect-list",
+      "name": "Start a matching-gift prospect list",
+      "weeks_out": 21,
+      "area": "Giving & Appeal",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Engage the critical few early. Qualifier: $1,200 or $100/mo. Lead gifts $5K+ each."
+    },
+    {
+      "id": "confirm-the-date-against-conflicts",
+      "name": "Confirm the date against conflicts",
+      "weeks_out": 20,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Working date Sat Mar 6, 2027. Check other nonprofits' events, school/campus events, holidays, key partners, Table Leaders, keynote and appeal speaker."
+    },
+    {
+      "id": "shortlist-and-tour-3-venues",
+      "name": "Shortlist and tour 3 venues",
+      "weeks_out": 20,
+      "area": "Venue & Catering",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Upscale 'date night' venue, separate reception space, stage on the long wall, high ceilings, no pillars, easy parking. Use the venue inspection checklist. Plan 30–50% growth room."
+    },
+    {
+      "id": "build-the-dinner-budget",
+      "name": "Build the dinner budget",
+      "weeks_out": 20,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Budget Guide worksheet. Food $30–50/plate + ~25–29% service + tax; AV $1.5–5K; print $1–2/person; décor; honorariums. Board approval if needed."
+    },
+    {
+      "id": "negotiate-the-venue",
+      "name": "Negotiate the venue",
+      "weeks_out": 20,
+      "area": "Venue & Catering",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Negotiation Script. Start from lunch pricing and portions; plated; pre-set salad and dessert; 6–8 oz beef; own AV allowed; professional servers; no alcohol; parking, power, Wi-Fi."
+    },
+    {
+      "id": "sign-the-venue-contract-only-after-per-plate-price-and-f-b-m",
+      "name": "Sign the venue contract (only after per-plate price and F&B minimum are set)",
+      "weeks_out": 20,
+      "area": "Venue & Catering",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Contract checklist: guarantee date, overset %, price lock, tax/gratuity formula, room waiver, cancellation, parking, billing. Deposits only; balance after the event."
+    },
+    {
+      "id": "set-the-saturday-run-of-show-times",
+      "name": "Set the Saturday run-of-show times",
+      "weeks_out": 20,
+      "area": "Program & Speakers",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Reception 5:45–6:30 · doors 6:20 · done about 8:15. 2:15 max including the meal."
+    },
+    {
+      "id": "hold-the-name-storming-party",
+      "name": "Hold the name-storming party",
+      "weeks_out": 19,
+      "area": "Table Leaders",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Ground rules: everyone agrees to fill a table; whoever names someone calls them. Criteria: within 1 hour, loves Jesus and the mission, knows 3–4 couples. Prime with professions."
+    },
+    {
+      "id": "set-up-the-table-leader-recruiting-tracker",
+      "name": "Set up the Table Leader Recruiting tracker",
+      "weeks_out": 19,
+      "area": "Table Leaders",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Name, who's asking, phone, email, asked?, confirmed?, registered?, packet delivered?, last contact, # at table, notes."
+    },
+    {
+      "id": "begin-table-leader-invite-calls",
+      "name": "Begin Table Leader invite calls",
+      "weeks_out": 19,
+      "area": "Table Leaders",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Table Leader invite script. Send the Pre-Call Letter first for weaker relationships. Get each Table Leader's email when they say yes."
+    },
+    {
+      "id": "recruit-the-host-committee",
+      "name": "Recruit the Host Committee",
+      "weeks_out": 19,
+      "area": "Table Leaders",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "6–8 well-known people who are ALREADY Table Leaders. One per profession; no pastors or politicians. Listed on the invitation (name, title, organization)."
+    },
+    {
+      "id": "recruit-the-overall-dinner-coordinator",
+      "name": "Recruit the Overall Dinner Coordinator",
+      "weeks_out": 18,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Strong delegator; owns timeline, print, speaker coaching, scripts and thank-yous. 4 Key Roles job descriptions."
+    },
+    {
+      "id": "recruit-the-table-leader-coordinator",
+      "name": "Recruit the Table Leader Coordinator",
+      "weeks_out": 18,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Leads a team of 4–6 to recruit, train and care for Table Leaders; helps plan seating."
+    },
+    {
+      "id": "recruit-the-registration-coordinator",
+      "name": "Recruit the Registration Coordinator",
+      "weeks_out": 18,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Runs the registration system, check-in, name tags, dietary and seating questions."
+    },
+    {
+      "id": "recruit-the-d-o-v-e",
+      "name": "Recruit the D.O.V.E.",
+      "weeks_out": 18,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Director of Volunteer Efforts: mailings, décor, testimonies, speaker logistics, night-of volunteers."
+    },
+    {
+      "id": "start-the-weekly-30-minute-dinner-team-call",
+      "name": "Start the weekly 30-minute dinner team call",
+      "weeks_out": 18,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director",
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Same time every week through the dinner."
+    },
+    {
+      "id": "final-venue-contract-check",
+      "name": "Final venue contract check",
+      "weeks_out": 18,
+      "area": "Venue & Catering",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Everything negotiated is in writing; F&B minimum vs expected attendance; outside AV allowed without penalty; no hidden costs."
+    },
+    {
+      "id": "build-the-program-timeline-aic-2-15-max",
+      "name": "Build the program timeline (AIC, 2:15 max)",
+      "weeks_out": 17,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Welcome 3 · prayer · dinner 45 max · honored guests 5 · update video 3 · Ministry Update 13 · Appeal Pt 1 7 · creative 5 · testimonies 3×3 · keynote 19 · Appeal Pt 2 5 · close."
+    },
+    {
+      "id": "recruit-the-keynote-speaker",
+      "name": "Recruit the keynote speaker",
+      "weeks_out": 17,
+      "area": "Program & Speakers",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Lesser-known proven communicator who knows and loves LEAD; humor + emotion + data. Honorarium $500 (LEAD standard)."
+    },
+    {
+      "id": "draft-the-day-of-pre-event-schedule",
+      "name": "Draft the day-of pre-event schedule",
+      "weeks_out": 17,
+      "area": "Night-of",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Setup from about 1 pm (5–6 hours); program team meeting and volunteer training 1 hour before guests arrive."
+    },
+    {
+      "id": "finalize-the-design-theme-across-all-pieces",
+      "name": "Finalize the design theme across all pieces",
+      "weeks_out": 16,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "One theme for web banner, save-the-date, invitation set, Don't Forget card, program, slides, giving envelope (Vision Dinner Spec Sheet)."
+    },
+    {
+      "id": "update-postcard-front-and-registration-banner-to-the-new-dat",
+      "name": "Update postcard front and registration banner to the new date",
+      "weeks_out": 16,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Both still show Oct 24, 2026. Hold printing until date and venue are final."
+    },
+    {
+      "id": "calculate-print-counts",
+      "name": "Calculate print counts",
+      "weeks_out": 16,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Table Leaders × 10 per piece + up to 600 mailed. Print-materials worksheet."
+    },
+    {
+      "id": "build-the-targeted-mailing-list-600",
+      "name": "Build the targeted mailing list (~600)",
+      "weeks_out": 16,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Best partners who gave in the last 12 months, within a 60-minute drive."
+    },
+    {
+      "id": "build-the-registration-page-at-leadcma-org-dinner",
+      "name": "Build the registration page at leadcma.org/dinner",
+      "weeks_out": 16,
+      "area": "Registration & Tech",
+      "roles": [
+        "Executive Director",
+        "Registration Coordinator"
+      ],
+      "details": "Register button and QR code for print. Replaces FundEasy."
+    },
+    {
+      "id": "build-the-vision-dinner-monday-boards",
+      "name": "Build the Vision Dinner Monday boards",
+      "weeks_out": 16,
+      "area": "Registration & Tech",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Vision Dinner Guests and Table Leaders boards in this folder, linked to All Contacts (master record)."
+    },
+    {
+      "id": "build-the-registration-form",
+      "name": "Build the registration form",
+      "weeks_out": 16,
+      "area": "Registration & Tech",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Hidden email lookup in All Contacts (update or create), plus-one with own email and 'same address' pre-checked, seating dropdown of confirmed Table Leaders + 'I like making new friends.'"
+    },
+    {
+      "id": "decide-the-contact-type-wording-at-registration",
+      "name": "Decide the Contact Type wording at registration",
+      "weeks_out": 16,
+      "area": "Registration & Tech",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Open item: 'March 2027 Vision Donor' at registration, or 'Vision Dinner Guest' at registration plus 'Vision Donor' after the gift import."
+    },
+    {
+      "id": "set-up-dinner-email-sequences-in-monday",
+      "name": "Set up dinner email sequences in Monday",
+      "weeks_out": 16,
+      "area": "Registration & Tech",
+      "roles": [
+        "Executive Director",
+        "Registration Coordinator"
+      ],
+      "details": "Confirmation, save-the-date email, e-invitation, Don't Forget, week-of reminders."
+    },
+    {
+      "id": "draft-the-beo",
+      "name": "Draft the BEO",
+      "weeks_out": 15,
+      "area": "Venue & Catering",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Drafting Your BEO worksheet. Saturday: dinner 6:30, entrées 6:40, last entrée 7:00; clear salads per person; one coffee pour; all staff leave before the program."
+    },
+    {
+      "id": "add-the-attire-line-to-the-registration-page-and-emails-only",
+      "name": "Add the attire line to the registration page and emails only",
+      "weeks_out": 15,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "details": "'Business Attire is strongly suggested: Men – Suit or Jacket/Tie. Women – Dress or Pants Outfit.' Not on print."
+    },
+    {
+      "id": "get-av-quotes-and-book-a-professional-av-company",
+      "name": "Get AV quotes and book a professional AV company",
+      "weeks_out": 15,
+      "area": "Venue & Catering",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Never the venue's AV. Sized to the room, own operators. Use the A/V Equipment Checklist."
+    },
+    {
+      "id": "review-the-save-the-date-invitation-and-don-t-forget-designs",
+      "name": "Review the save-the-date, invitation and Don't Forget designs",
+      "weeks_out": 15,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Final proof before ordering print."
+    },
+    {
+      "id": "order-print-save-the-dates-invitations-don-t-forget-cards",
+      "name": "Order print: save-the-dates, invitations, Don't Forget cards",
+      "weeks_out": 14,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Quantities from the Week 16 print counts."
+    },
+    {
+      "id": "prepare-the-table-leader-packet-contents",
+      "name": "Prepare the Table Leader packet contents",
+      "weeks_out": 14,
+      "area": "Table Leaders",
+      "roles": [
+        "Table Leader Coordinator"
+      ],
+      "details": "Intro letter, invitation checklist, How to Invite & Register sheet, 10 save-the-dates, 10 invitations, 10 Don't Forget cards, 9×12 envelope."
+    },
+    {
+      "id": "hold-the-table-leader-packing-party",
+      "name": "Hold the Table Leader packing party",
+      "weeks_out": 14,
+      "area": "Table Leaders",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Volunteers assemble packets."
+    },
+    {
+      "id": "recruit-church-champions",
+      "name": "Recruit Church Champions",
+      "weeks_out": 14,
+      "area": "Table Leaders",
+      "roles": [
+        "Table Leader Coordinator",
+        "Executive Director"
+      ],
+      "details": "1–2 per supporting church who lead a table AND recruit other Table Leaders."
+    },
+    {
+      "id": "define-zip-ranges-and-buy-stamps-for-the-save-the-date-maili",
+      "name": "Define ZIP ranges and buy stamps for the save-the-date mailing",
+      "weeks_out": 14,
+      "area": "Marketing & Mail",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "60-minute drive radius."
+    },
+    {
+      "id": "secure-the-matching-gift-fund-5-5k",
+      "name": "Secure the matching gift fund (5 × $5K)",
+      "weeks_out": 12,
+      "area": "Giving & Appeal",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Lead gifts committed before the dinner, given at or after (ECFA). Guests qualify at $1,200 or $100/mo."
+    },
+    {
+      "id": "convert-any-past-sponsors-into-matching-gift-partners",
+      "name": "Convert any past sponsors into matching-gift partners",
+      "weeks_out": 12,
+      "area": "Giving & Appeal",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Thank them, explain leveraged generosity (3–5× impact), ask them to redirect the same amount or more into the match. Call them partners."
+    },
+    {
+      "id": "recruit-and-train-the-calling-team",
+      "name": "Recruit and train the calling team",
+      "weeks_out": 12,
+      "area": "Table Leaders",
+      "roles": [
+        "Table Leader Coordinator"
+      ],
+      "details": "1 caller per 15 Table Leaders. Train with role-play; give read-only access to registrations."
+    },
+    {
+      "id": "milestone-50-of-table-leaders-recruited",
+      "name": "Milestone: 50% of Table Leaders recruited",
+      "weeks_out": 12,
+      "area": "Table Leaders",
+      "roles": [
+        "Table Leader Coordinator"
+      ],
+      "details": "Never stop recruiting Table Leaders."
+    },
+    {
+      "id": "deliver-table-leader-packets",
+      "name": "Deliver Table Leader packets",
+      "weeks_out": 12,
+      "area": "Table Leaders",
+      "roles": [
+        "Table Leader Coordinator"
+      ],
+      "details": "Hand-delivered within 24–48 hours of each yes."
+    },
+    {
+      "id": "mail-the-save-the-date-postcard",
+      "name": "Mail the save-the-date postcard",
+      "weeks_out": 12,
+      "area": "Marketing & Mail",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "To the targeted list (~600), same week packets go out (LEAD standard)."
+    },
+    {
+      "id": "callers-make-first-calls-to-table-leaders",
+      "name": "Callers make first calls to Table Leaders",
+      "weeks_out": 12,
+      "area": "Table Leaders",
+      "roles": [
+        "Calling Team"
+      ],
+      "details": "3–5 days after packets arrive. Walk through Table Leader responsibilities. Then every other week until 4 weeks out."
+    },
+    {
+      "id": "follow-up-with-recruiters-who-haven-t-made-their-asks",
+      "name": "Follow up with recruiters who haven't made their asks",
+      "weeks_out": 12,
+      "area": "Table Leaders",
+      "roles": [
+        "Overall Dinner Coordinator",
+        "Table Leader Coordinator"
+      ],
+      "details": "Address fear of calling."
+    },
+    {
+      "id": "write-the-3-accelerators",
+      "name": "Write the 3 accelerators",
+      "weeks_out": 11,
+      "area": "Giving & Appeal",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "$25K–$150K+ each. 'Accelerator #1: $X — Two-Word Title — [action] [how] [SMART impact]'. Fit on one slide."
+    },
+    {
+      "id": "confirm-all-7-speaking-roles",
+      "name": "Confirm all 7 speaking roles",
+      "weeks_out": 11,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator",
+        "Executive Director"
+      ],
+      "details": "Emcee, Ministry Update, appeal speaker (board chair), 2 changed-life testimonies, partner testimony, prayer. Keynote confirmed Week 17."
+    },
+    {
+      "id": "write-the-vision-dinner-narrative",
+      "name": "Write the Vision Dinner Narrative",
+      "weeks_out": 11,
+      "area": "Program & Speakers",
+      "roles": [
+        "Executive Director",
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Template doc: theme, message, 3–5 priorities, strategies, opportunities."
+    },
+    {
+      "id": "produce-the-ministry-update-video-3-min",
+      "name": "Produce the Ministry Update video (3 min)",
+      "weeks_out": 10,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "History and problem, 20,000-ft view, short testimony snippets, no current asks."
+    },
+    {
+      "id": "plan-the-creative-pieces",
+      "name": "Plan the creative pieces",
+      "weeks_out": 10,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "5 min max each, 3 total including the update video."
+    },
+    {
+      "id": "plan-the-reception",
+      "name": "Plan the reception",
+      "weeks_out": 10,
+      "area": "Venue & Catering",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Punch and water stations, no hors d'oeuvres, space for 50%+ of guests, sell nothing before the appeal."
+    },
+    {
+      "id": "write-the-ministry-update-13-min",
+      "name": "Write the Ministry Update (13 min)",
+      "weeks_out": 9,
+      "area": "Program & Speakers",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Problem 1 · Who we are 2 · How God is using us 2 · Opportunities 3 · 3 Accelerators 5. Named stories, no giving levels. Edit out loud. Required closing line introduces the appeal speaker."
+    },
+    {
+      "id": "send-the-save-the-date-email",
+      "name": "Send the save-the-date email",
+      "weeks_out": 9,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "details": "Monday sequence."
+    },
+    {
+      "id": "send-the-keynote-speaker-guideline-letter",
+      "name": "Send the Keynote Speaker Guideline Letter",
+      "weeks_out": 9,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Customized."
+    },
+    {
+      "id": "finalize-the-3-accelerators",
+      "name": "Finalize the 3 accelerators",
+      "weeks_out": 9,
+      "area": "Giving & Appeal",
+      "roles": [
+        "Executive Director"
+      ]
+    },
+    {
+      "id": "resume-table-leader-recruiting-second-50",
+      "name": "Resume Table Leader recruiting (second 50%)",
+      "weeks_out": 9,
+      "area": "Table Leaders",
+      "roles": [
+        "Table Leader Coordinator"
+      ],
+      "details": "Spring dinners recruit the second half from about Jan 2."
+    },
+    {
+      "id": "plan-the-wow-factor",
+      "name": "Plan the WOW factor",
+      "weeks_out": 8,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Signage from the parking lot, programs on chairs, centerpieces with table numbers, riser, podium, backdrop, welcome slides."
+    },
+    {
+      "id": "choose-the-table-giveaway",
+      "name": "Choose the table giveaway",
+      "weeks_out": 8,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "One branded item per table; a red dot under one program marks the winner. Not a raffle."
+    },
+    {
+      "id": "prepare-time-cards-and-countdown-app-choose-the-timekeeper",
+      "name": "Prepare time cards and countdown app; choose the timekeeper",
+      "weeks_out": 8,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "5 / 3 / 1 / STOP (LEAD standard). Timekeeper in clear view of the podium."
+    },
+    {
+      "id": "budget-honorariums-and-tips",
+      "name": "Budget honorariums and tips",
+      "weeks_out": 8,
+      "area": "Strategy & Team",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Keynote $500 · emcee $100 · ODC $100 · Table Leader, Registration and D.O.V.E. coordinators $50 each · banquet captain $100. Others get a handwritten thank-you."
+    },
+    {
+      "id": "train-table-leaders-on-managing-their-table",
+      "name": "Train Table Leaders on managing their table",
+      "weeks_out": 8,
+      "area": "Registration & Tech",
+      "roles": [
+        "Table Leader Coordinator",
+        "Registration Coordinator"
+      ],
+      "details": "How to register guests and see their table on the registration system."
+    },
+    {
+      "id": "start-late-print-designs",
+      "name": "Start late-print designs",
+      "weeks_out": 8,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Giving envelope, program, Table Leader Giving Packet, signage, name tags."
+    },
+    {
+      "id": "write-the-giving-opportunities-slide",
+      "name": "Write the giving opportunities slide",
+      "weeks_out": 7,
+      "area": "Giving & Appeal",
+      "roles": [
+        "Executive Director",
+        "Appeal Speaker"
+      ],
+      "details": "~7 lines tied to accelerators: $600/$50 · $1,200/$100 · $2,400/$200 · $4,800/$400 + 2–3 of $12K–$72K. Level ÷ unit cost = impact."
+    },
+    {
+      "id": "fill-in-the-appeal-script-verbatim",
+      "name": "Fill in the appeal script (verbatim)",
+      "weeks_out": 7,
+      "area": "Giving & Appeal",
+      "roles": [
+        "Appeal Speaker",
+        "Overall Dinner Coordinator"
+      ],
+      "details": "FMM Financial Appeal Script. Part 1: 7 min; Part 2: 5 min (LEAD standard). Same speaker both halves."
+    },
+    {
+      "id": "send-the-financial-appeal-packet-to-the-appeal-speaker",
+      "name": "Send the Financial Appeal Packet to the appeal speaker",
+      "weeks_out": 7,
+      "area": "Giving & Appeal",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Cover letter, both scripts, training video."
+    },
+    {
+      "id": "send-electronic-invitations",
+      "name": "Send electronic invitations",
+      "weeks_out": 7,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "details": "Monday sequence."
+    },
+    {
+      "id": "finalize-the-giving-envelope-and-program-for-review",
+      "name": "Finalize the giving envelope and program for review",
+      "weeks_out": 7,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Envelope follows the template exactly."
+    },
+    {
+      "id": "recruit-and-coach-2-changed-life-testimonies",
+      "name": "Recruit and coach 2 changed-life testimonies",
+      "weeks_out": 6,
+      "area": "Program & Speakers",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "3 min each, live. Changed-Life Testimony Guide."
+    },
+    {
+      "id": "recruit-and-coach-the-partner-testimony",
+      "name": "Recruit and coach the partner testimony",
+      "weeks_out": 6,
+      "area": "Program & Speakers",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Consistent giver, not a pastor, not a couple. Partner Testimony Guide."
+    },
+    {
+      "id": "mail-printed-invitations-to-the-targeted-list",
+      "name": "Mail printed invitations to the targeted list",
+      "weeks_out": 6,
+      "area": "Marketing & Mail",
+      "roles": [
+        "D.O.V.E."
+      ]
+    },
+    {
+      "id": "create-the-run-sheet-for-key-personnel",
+      "name": "Create the run sheet for key personnel",
+      "weeks_out": 6,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ]
+    },
+    {
+      "id": "prepare-the-6-thank-you-letters",
+      "name": "Prepare the 6 thank-you letters",
+      "weeks_out": 5,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "One-time · 90-day · 12-month · one-time AND monthly · attended, no gift · registered, didn't attend. Mail-merge fields."
+    },
+    {
+      "id": "schedule-the-thank-you-party-and-list-its-volunteers",
+      "name": "Schedule the Thank-You Party and list its volunteers",
+      "weeks_out": 5,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Morning after the dinner: sort, merge, print, stuff, stamp, call."
+    },
+    {
+      "id": "assign-next-day-thank-you-callers",
+      "name": "Assign next-day thank-you callers",
+      "weeks_out": 5,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Every $600+ or $50/mo+ giver."
+    },
+    {
+      "id": "ministry-update-final-draft-done",
+      "name": "Ministry Update final draft done",
+      "weeks_out": 5,
+      "area": "Program & Speakers",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Finish by 5 weeks out."
+    },
+    {
+      "id": "set-the-room-layout-and-serpentine-table-numbers",
+      "name": "Set the room layout and serpentine table numbers",
+      "weeks_out": 4,
+      "area": "Venue & Catering",
+      "roles": [
+        "Registration Coordinator",
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Stage on the long wall. Table 1 front left; rows alternate direction. Mirror it in the registration system."
+    },
+    {
+      "id": "order-giving-envelopes-and-programs",
+      "name": "Order giving envelopes and programs",
+      "weeks_out": 4,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "#10 envelope; programs on heavy cardstock."
+    },
+    {
+      "id": "assemble-table-leader-giving-packets",
+      "name": "Assemble Table Leader Giving Packets",
+      "weeks_out": 4,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Labeled 9×12 with name and table number: attendance sheet, Day-Of Guidelines, 10 giving envelopes, 10 pens. Handed out at registration."
+    },
+    {
+      "id": "recruit-greeters-6-8",
+      "name": "Recruit greeters (6–8)",
+      "weeks_out": 4,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Line of sight from one to the next, from the parking lot to registration."
+    },
+    {
+      "id": "recruit-ushers-and-a-chief-usher",
+      "name": "Recruit ushers and a Chief Usher",
+      "weeks_out": 4,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ]
+    },
+    {
+      "id": "recruit-registration-workers",
+      "name": "Recruit registration workers",
+      "weeks_out": 4,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E.",
+        "Registration Coordinator"
+      ],
+      "details": "1 table + 2 workers per 150 guests, plus a Special Registration table."
+    },
+    {
+      "id": "recruit-counters-4-8-and-a-counting-coordinator",
+      "name": "Recruit counters (4–8) and a Counting Coordinator",
+      "weeks_out": 4,
+      "area": "Night-of",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "Trusted staff/board, not greeters or ushers."
+    },
+    {
+      "id": "recruit-the-setup-and-teardown-crew",
+      "name": "Recruit the setup and teardown crew",
+      "weeks_out": 4,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ]
+    },
+    {
+      "id": "testimony-scripts-due-to-the-d-o-v-e",
+      "name": "Testimony scripts due to the D.O.V.E.",
+      "weeks_out": 4,
+      "area": "Program & Speakers",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "D.O.V.E. hears each one at least once."
+    },
+    {
+      "id": "move-table-leader-calls-to-weekly",
+      "name": "Move Table Leader calls to weekly",
+      "weeks_out": 4,
+      "area": "Table Leaders",
+      "roles": [
+        "Calling Team"
+      ],
+      "details": "Full tables (6+) can stay every other week."
+    },
+    {
+      "id": "set-up-online-check-in-with-a-paper-list-fallback",
+      "name": "Set up online check-in with a paper-list fallback",
+      "weeks_out": 4,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator",
+        "Executive Director"
+      ]
+    },
+    {
+      "id": "set-the-meal-guarantee",
+      "name": "Set the meal guarantee",
+      "weeks_out": 3,
+      "area": "Venue & Catering",
+      "roles": [
+        "Registration Coordinator",
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Guarantee Table Leader-assigned guests only. Plan 10–12% no-shows minus the venue's 3–5% overset. Don't tell the venue."
+    },
+    {
+      "id": "send-volunteer-letters-and-job-descriptions",
+      "name": "Send volunteer letters and job descriptions",
+      "weeks_out": 3,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Arrival time and who to report to."
+    },
+    {
+      "id": "train-greeters-ushers-and-registration-workers",
+      "name": "Train greeters, ushers and registration workers",
+      "weeks_out": 3,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E.",
+        "Registration Coordinator"
+      ],
+      "details": "Registration: the 4 kinds of arrivals (pre-registered, Table Leaders, unassigned, walk-ins)."
+    },
+    {
+      "id": "book-the-photographer",
+      "name": "Book the photographer",
+      "weeks_out": 3,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Photographer Cheat Sheet."
+    },
+    {
+      "id": "mail-the-don-t-forget-postcard",
+      "name": "Mail the Don't Forget postcard",
+      "weeks_out": 3,
+      "area": "Marketing & Mail",
+      "roles": [
+        "D.O.V.E."
+      ]
+    },
+    {
+      "id": "finalize-the-program-and-the-6-thank-you-letters",
+      "name": "Finalize the program and the 6 thank-you letters",
+      "weeks_out": 3,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ]
+    },
+    {
+      "id": "fish-or-cut-bait-calls-to-every-table-leader",
+      "name": "'Fish or cut bait' calls to every Table Leader",
+      "weeks_out": 2,
+      "area": "Table Leaders",
+      "roles": [
+        "Calling Team",
+        "Table Leader Coordinator"
+      ],
+      "details": "Confirm who is really filling their table before the guarantee."
+    },
+    {
+      "id": "merge-and-split-tables",
+      "name": "Merge and split tables",
+      "weeks_out": 2,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator",
+        "Table Leader Coordinator"
+      ],
+      "details": "Close registration first. Largest group's Table Leader leads a merged table."
+    },
+    {
+      "id": "give-the-guarantee-finalize-and-sign-the-beo",
+      "name": "Give the guarantee; finalize and sign the BEO",
+      "weeks_out": 2,
+      "area": "Venue & Catering",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Signed by both sides; carry copies on the night."
+    },
+    {
+      "id": "consolidate-and-edit-all-scripts",
+      "name": "Consolidate and edit all scripts",
+      "weeks_out": 2,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator",
+        "Executive Director"
+      ],
+      "details": "One message that celebrates the Lord. Master script for AV."
+    },
+    {
+      "id": "build-the-slides",
+      "name": "Build the slides",
+      "weeks_out": 2,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "One file, videos local, content in the top two-thirds of the screen."
+    },
+    {
+      "id": "set-up-the-gift-counting-sheet-and-train-counters",
+      "name": "Set up the gift counting sheet and train counters",
+      "weeks_out": 2,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Executive Director"
+      ],
+      "details": "6 tabs = the 6 letter types. Counters work in pairs."
+    },
+    {
+      "id": "send-the-program-to-the-printer-send-the-don-t-forget-email",
+      "name": "Send the program to the printer; send the Don't Forget email",
+      "weeks_out": 2,
+      "area": "Marketing & Mail",
+      "roles": [
+        "Overall Dinner Coordinator",
+        "Registration Coordinator"
+      ]
+    },
+    {
+      "id": "practice-run-of-check-in",
+      "name": "Practice run of check-in",
+      "weeks_out": 2,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ]
+    },
+    {
+      "id": "close-public-registration-at-capacity-5-if-needed",
+      "name": "Close public registration at capacity +5% if needed",
+      "weeks_out": 2,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "details": "Waitlist and backfill from cancellations."
+    },
+    {
+      "id": "set-seating",
+      "name": "Set seating",
+      "weeks_out": 1,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator",
+        "Table Leader Coordinator"
+      ],
+      "details": "Program participants, major partners and VIPs up front; timekeeper in the podium's view."
+    },
+    {
+      "id": "finalize-the-emcee-script-and-minute-by-minute-schedule",
+      "name": "Finalize the emcee script and minute-by-minute schedule",
+      "weeks_out": 1,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ]
+    },
+    {
+      "id": "decide-the-cut-list-plan-to-end-5-minutes-early",
+      "name": "Decide the cut list (plan to end 5 minutes early)",
+      "weeks_out": 1,
+      "area": "Program & Speakers",
+      "roles": [
+        "Overall Dinner Coordinator",
+        "Executive Director"
+      ]
+    },
+    {
+      "id": "print-run-sheets-20-and-the-signed-beo",
+      "name": "Print run sheets (20) and the signed BEO",
+      "weeks_out": 1,
+      "area": "Night-of",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ]
+    },
+    {
+      "id": "prepare-honorariums-and-tips",
+      "name": "Prepare honorariums and tips",
+      "weeks_out": 1,
+      "area": "Strategy & Team",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "LEAD amounts (see Week 8)."
+    },
+    {
+      "id": "print-name-tags-and-paper-attendance-backup",
+      "name": "Print name tags and paper attendance backup",
+      "weeks_out": 1,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "details": "Table number and Table Leader indicator."
+    },
+    {
+      "id": "confirm-av-equipment-and-load-in-time",
+      "name": "Confirm AV equipment and load-in time",
+      "weeks_out": 1,
+      "area": "Venue & Catering",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "details": "Load-in at least 2–4 hours before doors."
+    },
+    {
+      "id": "email-staff-and-volunteers-final-logistics",
+      "name": "Email staff and volunteers final logistics",
+      "weeks_out": 1,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "details": "Arrival times, pre-event meetings, address, dress code, parking."
+    },
+    {
+      "id": "schedule-the-5-week-of-reminder-emails",
+      "name": "Schedule the 5 week-of reminder emails",
+      "weeks_out": 1,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "details": "Mon 1 pm · Wed 7 pm · day before 11 am · morning of 8 am · 2 hours before doors. Address, map link, schedule."
+    },
+    {
+      "id": "pray-daily-as-a-team-psalm-34",
+      "name": "Pray daily as a team (Psalm 34)",
+      "weeks_out": 1,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ]
+    },
+    {
+      "id": "work-through-the-final-packing-checklist",
+      "name": "Work through the Final Packing Checklist",
+      "weeks_out": 1,
+      "area": "Night-of",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ]
+    },
+    {
+      "id": "reminder-email-monday-1-pm",
+      "name": "Reminder email: Monday 1 pm",
+      "weeks_out": 0,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "offset_days": -5
+    },
+    {
+      "id": "reminder-email-wednesday-7-pm",
+      "name": "Reminder email: Wednesday 7 pm",
+      "weeks_out": 0,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "offset_days": -3,
+      "details": "Add 'come dressed in your best'."
+    },
+    {
+      "id": "reminder-email-day-before-11-am",
+      "name": "Reminder email: day before, 11 am",
+      "weeks_out": 0,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "offset_days": -1
+    },
+    {
+      "id": "reminder-email-morning-of-8-am",
+      "name": "Reminder email: morning of, 8 am",
+      "weeks_out": 0,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "offset_days": 0
+    },
+    {
+      "id": "reminder-email-2-hours-before-doors",
+      "name": "Reminder email: 2 hours before doors",
+      "weeks_out": 0,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "offset_days": 0,
+      "details": "Directions."
+    },
+    {
+      "id": "download-check-in-data-and-print-paper-lists-before-leaving",
+      "name": "Download check-in data and print paper lists before leaving",
+      "weeks_out": 0,
+      "area": "Registration & Tech",
+      "roles": [
+        "Registration Coordinator"
+      ],
+      "offset_days": 0
+    },
+    {
+      "id": "venue-setup-key-coordinators-and-av-3-hours-before",
+      "name": "Venue setup (key coordinators and AV 3 hours before)",
+      "weeks_out": 0,
+      "area": "Night-of",
+      "roles": [
+        "Overall Dinner Coordinator",
+        "D.O.V.E."
+      ],
+      "offset_days": 0
+    },
+    {
+      "id": "brief-the-banquet-captain-with-the-beo-and-timeline",
+      "name": "Brief the banquet captain with the BEO and timeline",
+      "weeks_out": 0,
+      "area": "Venue & Catering",
+      "roles": [
+        "Overall Dinner Coordinator"
+      ],
+      "offset_days": 0,
+      "details": "You control the timing, not the venue."
+    },
+    {
+      "id": "speaker-walkthrough-and-volunteer-briefing",
+      "name": "Speaker walkthrough and volunteer briefing",
+      "weeks_out": 0,
+      "area": "Night-of",
+      "roles": [
+        "Overall Dinner Coordinator",
+        "D.O.V.E."
+      ],
+      "offset_days": 0,
+      "details": "Speakers 20–30 min before doors; volunteers 1 hour before guests."
+    },
+    {
+      "id": "collect-every-envelope-count-in-a-private-room",
+      "name": "Collect every envelope; count in a private room",
+      "weeks_out": 0,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Executive Director"
+      ],
+      "offset_days": 0,
+      "details": "Get the quick total that night."
+    },
+    {
+      "id": "videotape-the-dinner",
+      "name": "Videotape the dinner",
+      "weeks_out": 0,
+      "area": "Night-of",
+      "roles": [
+        "D.O.V.E."
+      ],
+      "offset_days": 0,
+      "details": "Even an iPhone on a stand."
+    },
+    {
+      "id": "thank-you-calls-to-every-600-or-50-mo-giver",
+      "name": "Thank-you calls to every $600+ or $50/mo+ giver",
+      "weeks_out": -1,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Executive Director",
+        "Overall Dinner Coordinator"
+      ],
+      "offset_days": 1,
+      "details": "Next day."
+    },
+    {
+      "id": "thank-you-party-letters-out-the-door-in-24",
+      "name": "Thank-You Party: letters out the door in 24",
+      "weeks_out": -1,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Overall Dinner Coordinator",
+        "D.O.V.E."
+      ],
+      "offset_days": 2,
+      "details": "Saturday dinner → mailed Monday."
+    },
+    {
+      "id": "process-cards-and-bank-info-black-out-numbers",
+      "name": "Process cards and bank info; black out numbers",
+      "weeks_out": -1,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Executive Director"
+      ],
+      "offset_days": 2,
+      "details": "Within 12 hours of processing."
+    },
+    {
+      "id": "import-gifts-and-update-contacts-in-monday",
+      "name": "Import gifts and update contacts in Monday",
+      "weeks_out": -1,
+      "area": "Registration & Tech",
+      "roles": [
+        "Executive Director",
+        "Registration Coordinator"
+      ],
+      "offset_days": 3,
+      "details": "Update Contact Type per the decision made in Week 16."
+    },
+    {
+      "id": "pay-the-venue-and-balances",
+      "name": "Pay the venue and balances",
+      "weeks_out": -1,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "offset_days": 6
+    },
+    {
+      "id": "debrief-and-evaluate",
+      "name": "Debrief and evaluate",
+      "weeks_out": -1,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Executive Director",
+        "Overall Dinner Coordinator"
+      ],
+      "offset_days": 7,
+      "details": "Attendance, no-show rate, giving per person and per table, AND gifts, cost per guest (night-of costs only)."
+    },
+    {
+      "id": "rate-the-keynote-and-pick-next-year-s-date",
+      "name": "Rate the keynote and pick next year's date",
+      "weeks_out": -1,
+      "area": "Strategy & Team",
+      "roles": [
+        "Executive Director"
+      ],
+      "offset_days": 7
+    },
+    {
+      "id": "shred-envelopes-about-2-weeks-after",
+      "name": "Shred envelopes (about 2 weeks after)",
+      "weeks_out": -1,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Executive Director"
+      ],
+      "offset_days": 14
+    },
+    {
+      "id": "start-monthly-faith-promise-reminder-letters",
+      "name": "Start monthly Faith Promise reminder letters",
+      "weeks_out": -1,
+      "area": "Gratitude & Follow-up",
+      "roles": [
+        "Executive Director"
+      ],
+      "offset_days": 25,
+      "details": "Insider-style: reminder + appreciation + story or prayer request."
+    },
+    {
+      "id": "plan-year-round-table-leader-cultivation",
+      "name": "Plan year-round Table Leader cultivation",
+      "weeks_out": -1,
+      "area": "Table Leaders",
+      "roles": [
+        "Executive Director",
+        "Table Leader Coordinator"
+      ],
+      "offset_days": 25,
+      "details": "Multiplication, not replication."
+    }
+  ]
+}
