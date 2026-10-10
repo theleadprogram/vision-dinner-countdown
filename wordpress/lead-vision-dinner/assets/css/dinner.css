@@ -55,6 +55,21 @@
 }
 body:has(.lvd-page) { overflow-x: clip; }
 
+/* Theme image rules (width: 100%, height: auto, position) must not reach the
+   page's photos and logos, so their geometry is pinned with !important. */
+.lvd-page .lvd-hero img.lvd-hero__img {
+	position: absolute !important; top: 0 !important; left: 0 !important;
+	width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important;
+	margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important;
+	object-fit: cover !important;
+}
+.lvd-page .lvd-hero img.lvd-hero__logo {
+	position: absolute !important; width: auto !important; height: 40px !important;
+	max-width: none !important; max-height: none !important; margin: 0 !important; padding: 0 !important;
+}
+.lvd-page img.lvd-topbar__logo { width: auto !important; height: 36px !important; max-width: none !important; margin: 0 !important; }
+.lvd-page .lvd-expect__card img { width: 100% !important; height: 130px !important; max-width: none !important; margin: 0 !important; object-fit: cover !important; }
+
 /* ---------- Type ---------- */
 .lvd .lvd-eyebrow { font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; line-height: 1.4; }
 .lvd .lvd-eyebrow--sand { color: var(--sand); letter-spacing: .16em; }
@@ -239,19 +254,20 @@ body:has(.lvd-page) { overflow-x: clip; }
 	.lvd .lvd-hero__photo { height: 620px; }
 	.lvd .lvd-hero__img { object-position: 50% 55%; }
 	.lvd .lvd-hero__shade { background: linear-gradient(180deg, rgba(17,17,17,.55) 0%, rgba(17,17,17,0) 26%, rgba(17,17,17,0) 70%, #111 100%); }
-	.lvd .lvd-hero__logo { left: 56px; top: 56px; height: 64px; }
+	.lvd .lvd-hero__logo { left: 56px; top: 56px; }
+	.lvd-page .lvd-hero img.lvd-hero__logo { height: 64px !important; }
 	.lvd .lvd-hero__mobile { display: none; }
 	.lvd .lvd-hero__details { display: flex; flex-direction: column; gap: 20px; padding: 8px 56px 56px; }
 	.lvd .lvd-facts { display: grid; grid-template-columns: 90px minmax(0, 1fr); row-gap: 10px; column-gap: 16px; font-size: 16px; line-height: 1.45; }
 	.lvd .lvd-facts dt { font-weight: 700; color: var(--sand); }
 	.lvd .lvd-hero__p { font-size: 15px; line-height: 1.5; opacity: .88; max-width: 44ch; text-wrap: pretty; }
-	.lvd .lvd-main { padding: 72px 96px 96px; }
+	.lvd .lvd-main { padding: 72px 96px 96px; justify-content: flex-start; }
 	.lvd .lvd-expect { grid-column: 1 / -1; padding: 72px 96px 80px; gap: 32px; }
 	.lvd .lvd-expect__head { gap: 8px; }
 	.lvd .lvd-expect .lvd-eyebrow { font-size: 12px; }
 	.lvd .lvd-expect .lvd-h2 { font-size: 40px; line-height: 1; }
 	.lvd .lvd-expect__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
-	.lvd .lvd-expect__card img { height: 240px; }
+	.lvd-page .lvd-expect__card img { height: 240px !important; }
 	.lvd .lvd-expect__card strong { font-size: 16px; }
 	.lvd .lvd-expect__card span { font-size: 14px; }
 	.lvd .lvd-hide-mobile { display: inline; }
@@ -326,7 +342,7 @@ body:has(.lvd-page) { overflow-x: clip; }
 
 @media (min-width: 900px) {
 	.lvd .lvd-topbar { padding: 20px 72px; }
-	.lvd .lvd-topbar__logo { height: 44px; }
+	.lvd-page img.lvd-topbar__logo { height: 44px !important; }
 	.lvd .lvd-table-body { padding: 56px 72px 80px; }
 	.lvd .lvd-tablegrid { grid-template-columns: minmax(0, 1fr) 400px; gap: 48px; }
 	.lvd .lvd-side { position: sticky; top: 24px; order: 0; }

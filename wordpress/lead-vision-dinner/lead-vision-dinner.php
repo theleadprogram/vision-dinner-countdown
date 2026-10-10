@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LEAD Vision Dinner Registration
  * Description: Registration for the LEAD Africa Vision Dinner at leadcma.org/dinner. Guests and Table Leaders register here; every registration writes to Monday.com. Shortcodes: [lead_vision_dinner] and [lead_vision_dinner_table].
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      LEAD
  * Requires PHP: 7.4
  * Requires at least: 5.8
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Block direct browser access.
 }
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 const SLUG    = 'lead-vision-dinner';
 
 define( 'LEAD_VD_FILE', __FILE__ );
