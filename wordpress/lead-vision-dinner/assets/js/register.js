@@ -247,27 +247,23 @@
 		var isLeader = v.role === 'leader';
 		var headline = page.querySelector('[data-thanks-headline]');
 
-		done.querySelector('[data-done-title]').textContent = isLeader ? 'Thank you for leading a table.' : 'See you ' + (dinner.dateShort || 'soon') + '.';
-		done.querySelector('[data-done-body]').textContent = isLeader
-			? 'We\'ve emailed your confirmation and your private guest link. Your Table Leader Coordinator will be in touch soon.'
-			: 'We\'ve emailed your confirmation. Watch for a reminder a few days before the dinner.';
+		var returning = isLeader && data.returned;
+
+		done.querySelector('[data-done-title]').textContent = returning
+			? 'You\'re already registered.'
+			: (isLeader ? 'Thank you for leading a table.' : 'See you ' + (dinner.dateShort || 'soon') + '.');
+		done.querySelector('[data-done-body]').textContent = returning
+			? 'You\'re a Table Leader for this dinner, so we didn\'t change anything. We\'ve emailed your private link to register guests. To update your details, contact your Table Leader Coordinator.'
+			: (isLeader
+				? 'We\'ve emailed your confirmation and your private guest link. Your Table Leader Coordinator will be in touch soon.'
+				: 'We\'ve emailed your confirmation. Watch for a reminder a few days before the dinner.');
 		done.querySelector('[data-done-table]').textContent = data.table || '';
 
+		// The "Now, fill your table." block only appears for a new Table
+		// Leader; a returning one gets the link by email only.
 		var leaderBlock = done.querySelector('[data-done-leader]');
-		leaderBlock.hidden = !isLeader;
-		if (isLeader) {
-			var link = done.querySelector('[data-done-link]');
-			var body = done.querySelector('[data-done-leader-body]');
-			if (data.link) {
-				link.href = data.link;
-				link.hidden = false;
-				body.textContent = 'Register guests as they say yes. We\'ve also emailed you this private link so you can come back anytime.';
-			} else {
-				// Already a Table Leader: the link only goes to the email on file.
-				link.hidden = true;
-				body.textContent = 'You were already registered as a Table Leader, so we\'ve updated your details. Your private link to register guests is in your confirmation email.';
-			}
-		}
+		leaderBlock.hidden = !isLeader || returning || !data.link;
+		if (!leaderBlock.hidden) done.querySelector('[data-done-link]').href = data.link;
 
 		headline.textContent = isLeader ? 'Thank you for saying yes.' : 'We saved you a seat.';
 		headline.hidden = false;

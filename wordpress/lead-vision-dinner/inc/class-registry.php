@@ -233,37 +233,33 @@ class Registry {
 		$existing = self::find_leader_by_email( $person['email'] );
 		$name     = self::household_name( $person, $plus );
 
+		// Already a Table Leader: change nothing (anyone can type an email) and
+		// email the private link to the address on file, as "Lost your link?" does.
 		if ( $existing ) {
-			$leader_id = $existing['id'];
-			$token     = '' !== $existing['token'] ? $existing['token'] : self::token();
-			Monday::update_item(
-				$tl,
-				$leader_id,
-				array(
-					'name'                                         => $name,
-					Config\column( 'table_leaders', 'church' )     => $person['church'],
-					Config\column( 'table_leaders', 'mobile' )     => Monday::phone( $person['phone'] ),
-					Config\column( 'table_leaders', 'guest_link_token' ) => $token,
-					Config\column( 'table_leaders', 'guest_link' ) => Monday::link( self::table_url( $token ), 'Register my guests' ),
-				)
-			);
-			Monday::add_update( $leader_id, 'Registered again on leadcma.org/dinner. Details updated from the form.' );
-		} else {
-			$token     = self::token();
-			$leader_id = Monday::create_item(
-				$tl,
-				$name,
-				array(
-					Config\column( 'table_leaders', 'status' )     => Monday::status( 'Registered' ),
-					Config\column( 'table_leaders', 'church' )     => $person['church'],
-					Config\column( 'table_leaders', 'email' )      => Monday::email( $person['email'] ),
-					Config\column( 'table_leaders', 'mobile' )     => Monday::phone( $person['phone'] ),
-					Config\column( 'table_leaders', 'seats_filled' ) => '0',
-					Config\column( 'table_leaders', 'guest_link_token' ) => $token,
-					Config\column( 'table_leaders', 'guest_link' ) => Monday::link( self::table_url( $token ), 'Register my guests' ),
-				)
+			self::send_link( $existing );
+			Monday::add_update( $existing['id'], 'Someone registered again on leadcma.org/dinner with this email. Nothing was changed; the private link was emailed to the address on file.' );
+			return array(
+				'role'     => 'leader',
+				'table'    => 'Your table · ' . self::TABLE_SIZE . ' seats',
+				'link'     => null,
+				'returned' => true,
 			);
 		}
+
+		$token     = self::token();
+		$leader_id = Monday::create_item(
+			$tl,
+			$name,
+			array(
+				Config\column( 'table_leaders', 'status' )     => Monday::status( 'Registered' ),
+				Config\column( 'table_leaders', 'church' )     => $person['church'],
+				Config\column( 'table_leaders', 'email' )      => Monday::email( $person['email'] ),
+				Config\column( 'table_leaders', 'mobile' )     => Monday::phone( $person['phone'] ),
+				Config\column( 'table_leaders', 'seats_filled' ) => '0',
+				Config\column( 'table_leaders', 'guest_link_token' ) => $token,
+				Config\column( 'table_leaders', 'guest_link' ) => Monday::link( self::table_url( $token ), 'Register my guests' ),
+			)
+		);
 
 		$guest    = self::find_guest( 'email', $person['email'] );
 		$party    = $guest && '' !== $guest['party'] ? $guest['party'] : self::party_id();
@@ -288,13 +284,11 @@ class Registry {
 
 		self::recount( array( $leader_id ) );
 
-		// Never hand a private link to whoever typed an existing Table
-		// Leader's email. The confirmation email (sent to that address) has it.
 		return array(
 			'role'     => 'leader',
 			'table'    => 'Your table · ' . self::TABLE_SIZE . ' seats',
-			'link'     => $existing ? null : self::table_url( $token ),
-			'returned' => (bool) $existing,
+			'link'     => self::table_url( $token ),
+			'returned' => false,
 		);
 	}
 
@@ -488,10 +482,18 @@ class Registry {
 		}
 
 		$leader = self::find_leader_by_email( $email );
-		if ( ! $leader ) {
-			return;
+		if ( $leader ) {
+			self::send_link( $leader );
 		}
+	}
 
+	/**
+	 * Email a Table Leader their private link (issuing one if they have none)
+	 * by flipping Link email to Send.
+	 *
+	 * @param array $leader id, token.
+	 */
+	private static function send_link( array $leader ) {
 		if ( '' === $leader['token'] ) {
 			$token = self::token();
 			Monday::update_item(
