@@ -102,8 +102,8 @@ class Registry {
 	/**
 	 * Seats filled per Table Leader item ID, read from the Guests board.
 	 *
-	 * A seat is any non-cancelled guest connected to the Table Leader, other
-	 * than the Table Leader themselves (their spouse/+1 does take a seat).
+	 * A seat is anyone connected to the Table Leader who isn't cancelled,
+	 * the Table Leader and their spouse/+1 included.
 	 *
 	 * @return array Table Leader item ID => count.
 	 */
@@ -135,8 +135,7 @@ class Registry {
 	 * @return bool
 	 */
 	private static function takes_a_seat( array $item ) {
-		return 'Cancelled' !== Monday::text( $item, Config\column( 'guests', 'status' ) )
-			&& 'Table Leader' !== Monday::text( $item, Config\column( 'guests', 'role' ) );
+		return 'Cancelled' !== Monday::text( $item, Config\column( 'guests', 'status' ) );
 	}
 
 	/* ---------------------------------------------------------------------
@@ -363,6 +362,7 @@ class Registry {
 				'dietary' => $g['dietary'],
 				'access'  => $g['access'],
 				'status'  => 'Cancelled' === $g['status'] ? 'Cancelled' : 'Registered',
+				'leader'  => 'Table Leader' === $g['role'],
 			);
 		}
 
@@ -660,7 +660,7 @@ class Registry {
 	}
 
 	/**
-	 * Everyone connected to a Table Leader except the Table Leader.
+	 * Everyone connected to a Table Leader, the Table Leader first.
 	 *
 	 * @param array $leader id, name.
 	 * @return array[]
@@ -673,18 +673,25 @@ class Registry {
 		$guests = array();
 		foreach ( Monday::items( $ids, self::guest_fields() ) as $item ) {
 			$guest = self::shape_guest( $item );
-			if ( 'Table Leader' !== $guest['role'] && in_array( $leader['id'], $guest['leader_ids'], true ) ) {
+			if ( in_array( $leader['id'], $guest['leader_ids'], true ) ) {
 				$guests[] = $guest;
 			}
 		}
 
-		// Registered first, then cancelled; each in the order they were added.
+		// The Table Leader, then registered guests, then cancelled; each group
+		// in the order they were added.
+		$rank = function ( $g ) {
+			if ( 'Table Leader' === $g['role'] ) {
+				return 0;
+			}
+			return 'Cancelled' === $g['status'] ? 2 : 1;
+		};
 		usort(
 			$guests,
-			function ( $a, $b ) {
-				$ca = 'Cancelled' === $a['status'];
-				$cb = 'Cancelled' === $b['status'];
-				return $ca === $cb ? strcmp( str_pad( $a['id'], 20, '0', STR_PAD_LEFT ), str_pad( $b['id'], 20, '0', STR_PAD_LEFT ) ) : ( $ca ? 1 : -1 );
+			function ( $a, $b ) use ( $rank ) {
+				$ra = $rank( $a );
+				$rb = $rank( $b );
+				return $ra === $rb ? strcmp( str_pad( $a['id'], 20, '0', STR_PAD_LEFT ), str_pad( $b['id'], 20, '0', STR_PAD_LEFT ) ) : $ra - $rb;
 			}
 		);
 
@@ -700,7 +707,8 @@ class Registry {
 	 */
 	private static function guest_at( array $leader, $guest_id ) {
 		foreach ( self::guests_at( $leader ) as $guest ) {
-			if ( $guest['id'] === (string) $guest_id ) {
+			// The Table Leader's own record isn't editable from the link.
+			if ( $guest['id'] === (string) $guest_id && 'Table Leader' !== $guest['role'] ) {
 				return $guest;
 			}
 		}

@@ -108,14 +108,15 @@
 		el.querySelector('[data-g="email"]').textContent = g.email || '—';
 		el.querySelector('[data-g="phone"]').textContent = g.phone || '—';
 		var badge = el.querySelector('[data-g="status"]');
-		badge.textContent = cancelled ? 'Cancelled' : 'Registered';
+		badge.textContent = cancelled ? 'Cancelled' : (g.leader ? 'Table Leader' : 'Registered');
 		badge.classList.toggle('lvd-badge--neutral', cancelled);
 
 		var toggle = el.querySelector('[data-g="toggle"]');
 		toggle.textContent = editing ? 'Close' : 'Edit';
 		toggle.setAttribute('aria-expanded', editing ? 'true' : 'false');
 		toggle.setAttribute('aria-label', (editing ? 'Close ' : 'Edit ') + g.first);
-		if (cancelled) toggle.hidden = true;
+		// Cancelled guests and the Table Leader's own seat have nothing to edit here.
+		if (cancelled || g.leader) toggle.hidden = true;
 
 		// Unique ids for the cloned fields.
 		Array.prototype.forEach.call(form.querySelectorAll('.lvd-field'), function (f) {

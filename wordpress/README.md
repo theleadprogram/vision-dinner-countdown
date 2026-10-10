@@ -45,7 +45,7 @@ Columns added beyond the handoff's list, all needed for Monday to send the email
 
 **Seats filled** is a Number column that the site recalculates after every change it makes. **Seats left** is a formula, 10 − Seats filled. The page itself always counts live from the Guests board, so a guest moved by hand in Monday shows correctly on the page right away. The Seats filled number in Monday catches up on the next registration for that table.
 
-How a seat is counted: a seat is any guest connected to the Table Leader with Status other than Cancelled, not counting the Table Leader themselves. A Table Leader's spouse takes a seat. This follows mockup 1c, where Clint's table lists Nancy but not Clint.
+How a seat is counted: a seat is anyone connected to the Table Leader whose Status isn't Cancelled. That includes the Table Leader and their spouse. A Table Leader couple starts at 2 of 10. The guest page lists the Table Leader first, labeled "Table Leader", with no Edit link. Changes to their own record go through the coordinator.
 
 ### Rules the site follows
 
