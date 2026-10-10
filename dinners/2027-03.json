@@ -64,6 +64,48 @@
           "0": "group_mm7zmgbd",
           "-1": "group_mm7zv0yr"
         }
+      },
+      "guests": {
+        "name": "Vision Dinner Guests – March 2027",
+        "id": 18434896459,
+        "url": "https://the-lead-program.monday.com/boards/18434896459",
+        "group": "topics",
+        "columns": {
+          "status": "color_mm80981n",
+          "role": "color_mm804qs3",
+          "table_leader": "board_relation_mm80a3rp",
+          "seating": "color_mm80fs27",
+          "party_id": "text_mm80p67b",
+          "email": "email_mm80p15p",
+          "mobile": "phone_mm80t2bx",
+          "mailing_address": "long_text_mm80ract",
+          "church": "text_mm80f4eq",
+          "dietary": "text_mm80sb94",
+          "accessibility": "text_mm80vcts",
+          "table_leader_interest": "boolean_mm804fnx",
+          "registered_by": "color_mm80q1v3",
+          "confirmation": "color_mm80gzb8",
+          "guest_link": "link_mm8012vm"
+        }
+      },
+      "table_leaders": {
+        "name": "Table Leaders – March 2027",
+        "id": 18434896452,
+        "url": "https://the-lead-program.monday.com/boards/18434896452",
+        "group": "topics",
+        "columns": {
+          "status": "color_mm80gw8f",
+          "church": "text_mm80wc7y",
+          "email": "email_mm806cd8",
+          "mobile": "phone_mm80s326",
+          "guests": "board_relation_mm80tzk",
+          "seats_filled": "numeric_mm8052vx",
+          "seats_left": "formula_mm80bt8p",
+          "guest_link_token": "text_mm80sjap",
+          "guest_link": "link_mm80mana",
+          "link_email": "color_mm80pnmw",
+          "coordinator": "multiple_person_mm80f9zx"
+        }
       }
     }
   }

@@ -1,0 +1,359 @@
+/*
+ * LEAD Africa Vision Dinner: leadcma.org/dinner
+ * Built from the design handoff (Registration Page / Registration Form).
+ * Everything is scoped under .lvd so the theme can't leak in, or out.
+ */
+
+@font-face { font-family: "Crossten"; src: url("../fonts/Crossten-Black.otf") format("opentype"); font-weight: 900; font-display: swap; }
+@font-face { font-family: "Crossten"; src: url("../fonts/Crossten-Extrabold.otf") format("opentype"); font-weight: 800; font-display: swap; }
+@font-face { font-family: "LVD Open Sans"; src: url("../fonts/OpenSans-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "LVD Open Sans"; src: url("../fonts/OpenSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+
+.lvd {
+	--red: #ED1B23;
+	--red-text: #B3141B;
+	--sand: #D0B087;
+	--sand-text: #8a6d45;
+	--sand-tint: #F6F1EA;
+	--warm-row: #FBF8F3;
+	--red-tint: #FDF2F2;
+	--ink: #1A1A1A;
+	--body: #4a4a4a;
+	--muted: #6b6b6b;
+	--placeholder: #9a9a9a;
+	--input-border: #cfcfcf;
+	--hairline: #e2e2e2;
+	--app-bg: #F4F4F4;
+	--photo: #111;
+	--ring: 0 0 0 3px rgba(237, 27, 35, .18);
+	--display: "Crossten", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+	--sans: "LVD Open Sans", "Open Sans", "Helvetica Neue", Arial, sans-serif;
+
+	font-family: var(--sans);
+	font-size: 15px;
+	line-height: 1.5;
+	color: var(--ink);
+	-webkit-font-smoothing: antialiased;
+	text-align: left;
+}
+.lvd *, .lvd *::before, .lvd *::after { box-sizing: border-box; }
+.lvd [hidden] { display: none !important; }
+.lvd img { max-width: 100%; height: auto; border: 0; box-shadow: none; }
+.lvd a { color: inherit; }
+.lvd p, .lvd h1, .lvd h2, .lvd dl, .lvd dd, .lvd figure { margin: 0; }
+.lvd fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.lvd legend { padding: 0; float: left; width: 100%; }
+.lvd legend + * { clear: both; }
+
+/* Break out of the theme's content column to the full viewport width. */
+/* Themes force max-width and margins (some with !important), so center with a
+   transform instead of negative margins. */
+.lvd-page {
+	position: relative; left: 50%; transform: translateX(-50%);
+	width: calc(100vw - var(--lvd-scrollbar, 0px)) !important; max-width: none !important;
+	margin-top: 0 !important; margin-bottom: 0 !important;
+}
+body:has(.lvd-page) { overflow-x: clip; }
+
+/* Theme image rules (width: 100%, height: auto, position) must not reach the
+   page's photos and logos, so their geometry is pinned with !important. */
+.lvd-page .lvd-hero img.lvd-hero__img {
+	position: absolute !important; top: 0 !important; left: 0 !important;
+	width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important;
+	margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important;
+	object-fit: cover !important;
+}
+.lvd-page .lvd-hero img.lvd-hero__logo {
+	position: absolute !important; width: auto !important; height: 40px !important;
+	max-width: none !important; max-height: none !important; margin: 0 !important; padding: 0 !important;
+}
+.lvd-page img.lvd-topbar__logo { width: auto !important; height: 36px !important; max-width: none !important; margin: 0 !important; }
+.lvd-page .lvd-expect__card img { width: 100% !important; height: 130px !important; max-width: none !important; margin: 0 !important; object-fit: cover !important; }
+
+/* ---------- Type ---------- */
+.lvd .lvd-eyebrow { font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; line-height: 1.4; }
+.lvd .lvd-eyebrow--sand { color: var(--sand); letter-spacing: .16em; }
+.lvd .lvd-eyebrow--red { color: var(--red); }
+.lvd .lvd-eyebrow--lg { font-size: 14px; }
+.lvd .lvd-h2 { font-family: var(--display); font-weight: 900; font-size: 40px; line-height: 1.02; letter-spacing: -.02em; color: var(--ink); text-wrap: balance; text-transform: none; }
+.lvd .lvd-h2--44 { font-size: 44px; line-height: 1; }
+.lvd .lvd-h3 { font-family: var(--display); font-weight: 800; font-size: 18px; line-height: 1.2; color: var(--ink); }
+.lvd .lvd-h3--20 { font-size: 20px; }
+.lvd .lvd-sub { color: var(--body); max-width: 52ch; text-wrap: pretty; }
+.lvd .lvd-sub--16 { font-size: 16px; max-width: 60ch; }
+.lvd .lvd-small { font-size: 13px; color: var(--body); }
+.lvd .lvd-small--14 { font-size: 14px; }
+.lvd .lvd-muted { color: var(--body); }
+.lvd .lvd-fine { font-size: 12px; color: var(--muted); text-align: center; }
+.lvd .lvd-fine--left { text-align: left; }
+.lvd .lvd-fine a { color: var(--muted); }
+.lvd .lvd-rule { width: 120px; height: 4px; background: var(--red); }
+
+/* ---------- Layout helpers ---------- */
+.lvd .lvd-stack { display: flex; flex-direction: column; }
+.lvd .lvd-stack--8 { gap: 8px; }
+.lvd .lvd-stack--10 { gap: 10px; }
+.lvd .lvd-stack--12 { gap: 12px; }
+.lvd .lvd-stack--14 { gap: 14px; }
+.lvd .lvd-stack--18 { gap: 18px; }
+.lvd .lvd-stack--28 { gap: 28px; }
+.lvd .lvd-grid { display: grid; }
+.lvd .lvd-grid--200 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.lvd .lvd-grid--180 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.lvd .lvd-grid--110 { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
+.lvd .lvd-grid--12 { gap: 12px; }
+.lvd .lvd-grid--14 { gap: 14px; }
+.lvd .lvd-field--span2 { grid-column: span 2; }
+.lvd .lvd-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lvd .lvd-self-start { align-self: flex-start; }
+
+/* ---------- Fields ---------- */
+.lvd .lvd-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.lvd .lvd-label { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.4; margin: 0; }
+.lvd .lvd-opt { font-weight: 400; color: var(--muted); }
+.lvd .lvd-input {
+	width: 100%; min-width: 0; height: 48px; margin: 0; padding: 0 16px;
+	border: 1.5px solid var(--input-border); border-radius: 10px; background: #fff;
+	font: 400 15px/1.2 var(--sans); color: var(--ink); outline: none; box-shadow: none;
+	-webkit-appearance: none; appearance: none; transition: border-color .15s, box-shadow .15s;
+}
+.lvd .lvd-input::placeholder { color: var(--placeholder); opacity: 1; }
+.lvd .lvd-input:focus { border-color: var(--red); box-shadow: var(--ring); }
+.lvd .lvd-input.is-invalid { border-color: var(--red); }
+.lvd .lvd-error { font-size: 13px; color: var(--red-text); }
+.lvd .lvd-note { font-size: 13px; color: var(--body); }
+.lvd .lvd-note--sand { color: var(--sand-text); }
+.lvd .lvd-hp { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Role cards */
+.lvd .lvd-choice {
+	position: relative; display: flex; flex-direction: column; gap: 4px; cursor: pointer;
+	padding: 16px 18px; border-radius: 12px; border: 2px solid var(--hairline); background: #fff;
+	transition: border-color .15s, background .15s;
+}
+.lvd .lvd-choice input { position: absolute; opacity: 0; pointer-events: none; }
+.lvd .lvd-choice:has(input:checked) { border-color: var(--red); background: var(--red-tint); }
+.lvd .lvd-choice:has(input:focus-visible) { box-shadow: var(--ring); }
+.lvd .lvd-choice__title { font-weight: 700; font-size: 16px; color: var(--ink); }
+.lvd .lvd-choice__sub { font-size: 13px; color: var(--body); }
+
+/* Table Leader search */
+.lvd .lvd-combo { position: relative; }
+.lvd .lvd-input--combo { padding-right: 44px; }
+.lvd .lvd-combo__caret { position: absolute; right: 16px; top: 13px; font-size: 14px; color: var(--muted); pointer-events: none; }
+.lvd .lvd-combo__list {
+	position: absolute; z-index: 20; left: 0; right: 0; top: 54px; max-height: 320px; overflow: auto;
+	display: flex; flex-direction: column; padding: 6px; background: #fff;
+	border: 1px solid var(--hairline); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.12);
+}
+.lvd .lvd-opt-row {
+	display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
+	text-align: left; padding: 10px 12px; margin: 0; border: 0; border-radius: 8px; background: transparent;
+	cursor: pointer; font: inherit; color: var(--ink); text-transform: none; letter-spacing: 0; box-shadow: none;
+}
+.lvd .lvd-opt-row:hover, .lvd .lvd-opt-row.is-active { background: var(--sand-tint); }
+.lvd .lvd-opt-row__text { display: flex; flex-direction: column; min-width: 0; }
+.lvd .lvd-opt-row__name { font-weight: 700; font-size: 15px; }
+.lvd .lvd-opt-row__church { font-size: 12px; color: var(--muted); }
+.lvd .lvd-pill { flex: none; font-weight: 700; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; color: #fff; line-height: 1.3; }
+.lvd .lvd-pill--full { background: var(--red); }
+.lvd .lvd-pill--few { background: var(--ink); }
+.lvd .lvd-pill--many { background: var(--sand); }
+.lvd .lvd-opt-row--seatme { margin-top: 4px; padding: 12px; border-top: 1px solid #eee; border-radius: 0 0 8px 8px; font-weight: 700; font-size: 14px; color: var(--red); }
+.lvd .lvd-combo__empty { padding: 10px 12px; font-size: 14px; color: var(--muted); }
+
+/* Spouse / guest switch */
+.lvd .lvd-toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px; border-radius: 12px; background: var(--sand-tint); cursor: pointer; margin: 0; }
+.lvd .lvd-switch {
+	flex: none; position: relative; width: 52px; height: 30px; margin: 0; border-radius: 999px; background: var(--input-border);
+	-webkit-appearance: none; appearance: none; cursor: pointer; transition: background .2s; border: 0; outline: none;
+}
+.lvd .lvd-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: left .2s; }
+.lvd .lvd-switch:checked { background: var(--red); }
+.lvd .lvd-switch:checked::after { left: 25px; }
+.lvd .lvd-switch:focus-visible { box-shadow: var(--ring); }
+.lvd .lvd-plus { padding: 4px 0 0 18px; border-left: 3px solid var(--sand); }
+
+/* Checkbox */
+.lvd .lvd-check { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding-top: 4px; margin: 0; font-weight: 400; }
+.lvd .lvd-check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--red); flex: none; }
+
+/* Cards */
+.lvd .lvd-card { padding: 16px 18px; border-radius: 12px; border: 1px solid var(--hairline); font-size: 14px; color: var(--ink); text-wrap: pretty; }
+.lvd .lvd-card--redtop { border-top: 4px solid var(--red); }
+.lvd .lvd-card--white { background: #fff; border-radius: 16px; padding: 28px; font-size: 15px; }
+.lvd .lvd-card--white.lvd-card--flush { padding: 0; overflow: hidden; }
+
+/* Banner */
+.lvd .lvd-banner { padding: 14px 16px; border-radius: 10px; background: var(--red-tint); border: 1px solid rgba(237,27,35,.35); color: var(--red-text); font-weight: 700; font-size: 14px; }
+
+/* Buttons (LEAD design system: primary / secondary / ghost) */
+.lvd .lvd-btn {
+	display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+	height: 44px; padding: 0 20px; margin: 0; border-radius: 10px; border: 1.5px solid transparent;
+	font: 700 15px/1 var(--sans); letter-spacing: 0; text-transform: none; text-decoration: none;
+	white-space: nowrap; cursor: pointer; box-shadow: none; transition: background .15s, border-color .15s, color .15s;
+}
+.lvd .lvd-btn--lg { height: 52px; padding: 0 28px; font-size: 16px; }
+.lvd .lvd-btn--block { width: 100%; }
+.lvd .lvd-btn--primary { background: var(--red); color: #fff; }
+.lvd .lvd-btn--primary:hover { background: var(--red-text); color: #fff; }
+.lvd .lvd-btn--secondary { background: #fff; color: var(--ink); border-color: var(--ink); }
+.lvd .lvd-btn--secondary:hover { background: var(--ink); color: #fff; }
+.lvd .lvd-btn--ghost { background: transparent; color: var(--ink); }
+.lvd .lvd-btn--ghost:hover { background: var(--app-bg); }
+.lvd .lvd-btn:focus-visible { outline: none; box-shadow: var(--ring); }
+.lvd .lvd-btn[disabled] { opacity: .7; cursor: progress; }
+.lvd .lvd-spinner { width: 18px; height: 18px; border-radius: 999px; border: 2.5px solid rgba(255,255,255,.4); border-top-color: #fff; animation: lvd-spin .8s linear infinite; }
+@keyframes lvd-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .lvd .lvd-spinner { animation-duration: 2s; } }
+
+/* ==========================================================================
+   Registration page (1a desktop, 1d mobile)
+   ========================================================================== */
+.lvd .lvd-reg { display: grid; grid-template-columns: 1fr; background: #fff; }
+.lvd .lvd-hero { position: relative; background: var(--photo); color: #fff; }
+.lvd .lvd-hero__photo { position: relative; height: 420px; overflow: hidden; }
+.lvd .lvd-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 64% center; filter: grayscale(100%); }
+.lvd .lvd-hero__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(17,17,17,.55) 0%, rgba(17,17,17,.15) 35%, rgba(17,17,17,.9) 100%); }
+.lvd .lvd-hero__logo { position: absolute; left: 24px; top: 28px; height: 40px; width: auto; }
+.lvd .lvd-hero__mobile { position: absolute; left: 24px; right: 24px; bottom: 24px; display: flex; flex-direction: column; gap: 10px; }
+.lvd .lvd-hero__mobile .lvd-eyebrow { font-size: 11px; }
+.lvd .lvd-hero__mobile .lvd-hero__h1 { font-size: 38px; }
+.lvd .lvd-hero__mobile .lvd-rule { width: 80px; height: 3px; }
+.lvd .lvd-hero__lines { font-size: 14px; line-height: 1.45; }
+.lvd .lvd-hero__h1 { font-family: var(--display); font-weight: 900; font-size: 64px; line-height: .95; letter-spacing: -.02em; color: #fff; text-transform: none; margin: 0; }
+.lvd .lvd-hero__details { display: none; }
+.lvd .lvd-hero__thanks { position: absolute; left: 24px; right: 24px; bottom: 24px; font-family: var(--display); font-weight: 900; font-size: 38px; line-height: .95; letter-spacing: -.02em; color: #fff; }
+.lvd .lvd-main { padding: 32px 24px 40px; display: flex; justify-content: center; }
+.lvd .lvd-main__inner { width: 100%; max-width: 600px; }
+.lvd .lvd-form { display: flex; flex-direction: column; gap: 36px; }
+
+/* Thank-you */
+.lvd .lvd-done { display: flex; flex-direction: column; gap: 24px; outline: none; }
+.lvd .lvd-check-tile { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--red); color: #fff; }
+.lvd .lvd-summary { display: grid; grid-template-columns: 90px minmax(0, 1fr); row-gap: 10px; column-gap: 16px; padding: 20px; border-radius: 12px; background: var(--sand-tint); font-size: 15px; }
+.lvd .lvd-summary dt { font-weight: 700; }
+
+/* What to expect */
+.lvd .lvd-expect { background: var(--sand-tint); padding: 36px 24px 40px; display: flex; flex-direction: column; gap: 20px; }
+.lvd .lvd-expect__head { display: flex; flex-direction: column; gap: 6px; }
+.lvd .lvd-expect .lvd-eyebrow { font-size: 11px; }
+.lvd .lvd-expect .lvd-h2 { font-size: 28px; }
+.lvd .lvd-expect__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.lvd .lvd-expect__card { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.lvd .lvd-expect__card img { width: 100%; height: 130px; object-fit: cover; border-radius: 12px; filter: grayscale(100%); }
+.lvd .lvd-expect__card figcaption { display: flex; flex-direction: column; gap: 6px; }
+.lvd .lvd-expect__card strong { font-size: 14px; color: var(--ink); }
+.lvd .lvd-expect__card span { font-size: 12px; line-height: 1.45; color: var(--body); text-wrap: pretty; }
+.lvd .lvd-hide-mobile { display: none; }
+
+@media (min-width: 1100px) {
+	.lvd .lvd-reg { grid-template-columns: 600px minmax(0, 1fr); align-items: stretch; }
+	.lvd .lvd-hero__inner { position: sticky; top: 0; display: flex; flex-direction: column; }
+	.lvd .lvd-hero__photo { height: 620px; }
+	.lvd .lvd-hero__img { object-position: 50% 55%; }
+	.lvd .lvd-hero__shade { background: linear-gradient(180deg, rgba(17,17,17,.55) 0%, rgba(17,17,17,0) 26%, rgba(17,17,17,0) 70%, #111 100%); }
+	.lvd .lvd-hero__logo { left: 56px; top: 56px; }
+	.lvd-page .lvd-hero img.lvd-hero__logo { height: 64px !important; }
+	.lvd .lvd-hero__mobile { display: none; }
+	.lvd .lvd-hero__details { display: flex; flex-direction: column; gap: 20px; padding: 8px 56px 56px; }
+	.lvd .lvd-facts { display: grid; grid-template-columns: 90px minmax(0, 1fr); row-gap: 10px; column-gap: 16px; font-size: 16px; line-height: 1.45; }
+	.lvd .lvd-facts dt { font-weight: 700; color: var(--sand); }
+	.lvd .lvd-hero__p { font-size: 15px; line-height: 1.5; opacity: .88; max-width: 44ch; text-wrap: pretty; }
+	.lvd .lvd-main { padding: 72px 96px 96px; justify-content: flex-start; }
+	.lvd .lvd-expect { grid-column: 1 / -1; padding: 72px 96px 80px; gap: 32px; }
+	.lvd .lvd-expect__head { gap: 8px; }
+	.lvd .lvd-expect .lvd-eyebrow { font-size: 12px; }
+	.lvd .lvd-expect .lvd-h2 { font-size: 40px; line-height: 1; }
+	.lvd .lvd-expect__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+	.lvd-page .lvd-expect__card img { height: 240px !important; }
+	.lvd .lvd-expect__card strong { font-size: 16px; }
+	.lvd .lvd-expect__card span { font-size: 14px; }
+	.lvd .lvd-hide-mobile { display: inline; }
+
+	/* Thank-you state (1b / 1g): the photo fills the panel with a headline. */
+	.lvd .lvd-reg.is-done .lvd-hero__inner { height: 100%; min-height: 900px; }
+	.lvd .lvd-reg.is-done .lvd-hero__photo { height: 100%; }
+	.lvd .lvd-reg.is-done .lvd-hero__shade { background: linear-gradient(180deg, rgba(17,17,17,.55) 0%, rgba(17,17,17,.2) 40%, rgba(17,17,17,.85) 100%); }
+	.lvd .lvd-reg.is-done .lvd-hero__details { display: none; }
+	.lvd .lvd-reg.is-done .lvd-hero__thanks { left: 56px; right: 56px; bottom: 56px; font-size: 56px; }
+	.lvd .lvd-reg.is-done .lvd-main { padding: 96px; align-items: center; }
+}
+@media (max-width: 1099px) {
+	/* On mobile the headline stays the event name; the form says thank you. */
+	.lvd .lvd-hero__thanks { display: none; }
+}
+@media (max-width: 480px) {
+	.lvd .lvd-field--span2 { grid-column: 1 / -1; }
+	.lvd .lvd-summary { grid-template-columns: 70px minmax(0, 1fr); }
+	.lvd .lvd-btn--lg { padding: 0 20px; }
+}
+
+/* ==========================================================================
+   Private guest page (1c)
+   ========================================================================== */
+.lvd-tablepage { background: var(--app-bg); }
+.lvd .lvd-topbar { background: #fff; border-bottom: 1px solid var(--hairline); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.lvd .lvd-topbar__logo { height: 36px; width: auto; }
+.lvd .lvd-topbar__meta { font-size: 14px; color: var(--body); }
+.lvd .lvd-table-body { padding: 32px 16px 56px; max-width: 1440px; margin: 0 auto; }
+.lvd .lvd-loading { padding: 48px 0; color: var(--body); }
+.lvd .lvd-lost { display: flex; flex-direction: column; gap: 28px; max-width: 600px; }
+.lvd .lvd-tablegrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: start; }
+.lvd .lvd-side { display: flex; flex-direction: column; gap: 20px; order: -1; }
+.lvd [data-count] { white-space: nowrap; }
+.lvd .lvd-list-head { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid #eee; }
+.lvd .lvd-empty { padding: 18px 20px; color: var(--body); }
+
+.lvd .lvd-guest { border-bottom: 1px solid #f0f0f0; background: #fff; }
+.lvd .lvd-guest:last-child { border-bottom: 0; }
+.lvd .lvd-guest.is-editing { background: var(--warm-row); }
+.lvd .lvd-guest.is-cancelled { background: #FAFAFA; }
+.lvd .lvd-guest__row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "name badge edit" "email email email" "phone phone phone"; column-gap: 12px; row-gap: 2px; align-items: center; padding: 14px 20px; font-size: 15px; }
+.lvd .lvd-guest__name { grid-area: name; font-weight: 700; }
+.lvd .lvd-guest__email { grid-area: email; color: var(--body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.lvd .lvd-guest__phone { grid-area: phone; color: var(--body); white-space: nowrap; font-size: 14px; }
+.lvd .lvd-guest__badge { grid-area: badge; justify-self: end; }
+.lvd .lvd-guest [data-g="toggle"] { grid-area: edit; justify-self: end; }
+.lvd .lvd-badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; line-height: 1.5; background: var(--red-tint); color: var(--red-text); }
+.lvd .lvd-badge--neutral { background: #EDEDED; color: var(--body); }
+.lvd .lvd-link { border: 0; background: transparent; cursor: pointer; font: 700 14px/1 var(--sans); color: var(--red); padding: 6px 0; margin: 0; text-transform: none; letter-spacing: 0; box-shadow: none; }
+.lvd .lvd-link:hover { color: var(--ink); background: transparent; }
+.lvd .lvd-guest__edit { padding: 4px 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+.lvd .lvd-guest__edit .lvd-input { height: 44px; padding: 0 14px; }
+.lvd .lvd-guest__actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.lvd .lvd-release { border: 0; background: transparent; cursor: pointer; font: 700 14px/1.3 var(--sans); color: var(--body); text-decoration: underline; padding: 0; margin: 0; text-transform: none; letter-spacing: 0; box-shadow: none; }
+.lvd .lvd-release:hover { color: var(--ink); background: transparent; }
+
+.lvd .lvd-meter { background: var(--ink); color: #fff; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+.lvd .lvd-meter__count { display: flex; align-items: baseline; gap: 10px; }
+.lvd .lvd-meter__count > span:first-child { font-family: var(--display); font-weight: 900; font-size: 64px; line-height: 1; color: #fff; }
+.lvd .lvd-meter__of { font-size: 18px; opacity: .8; }
+.lvd .lvd-meter__bar { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+.lvd .lvd-meter__bar span { height: 12px; border-radius: 3px; background: rgba(255,255,255,.18); }
+.lvd .lvd-meter__bar span.is-filled { background: var(--red); }
+.lvd .lvd-meter__msg { font-size: 14px; line-height: 1.5; opacity: .88; }
+.lvd .lvd-help { padding: 24px; font-size: 14px; }
+.lvd .lvd-help__name { font-weight: 700; font-size: 16px; }
+.lvd .lvd-help__note { margin-top: 6px; }
+.lvd .lvd-help a { color: var(--body); text-decoration: none; }
+.lvd .lvd-help a:hover { color: var(--red); }
+
+@media (min-width: 900px) {
+	.lvd .lvd-topbar { padding: 20px 72px; }
+	.lvd-page img.lvd-topbar__logo { height: 44px !important; }
+	.lvd .lvd-table-body { padding: 56px 72px 80px; }
+	.lvd .lvd-tablegrid { grid-template-columns: minmax(0, 1fr) 400px; gap: 48px; }
+	.lvd .lvd-side { position: sticky; top: 24px; order: 0; }
+	.lvd .lvd-list-head { padding: 18px 28px; }
+	.lvd .lvd-empty { padding: 18px 28px; }
+	.lvd .lvd-guest__row { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, 1fr) 110px 70px; grid-template-areas: "name email phone badge edit"; gap: 16px; padding: 14px 28px; }
+	.lvd .lvd-guest__email, .lvd .lvd-guest__phone { font-size: 15px; }
+	.lvd .lvd-guest__edit { padding: 4px 28px 22px; }
+}
+@media (max-width: 480px) {
+	.lvd .lvd-card--white { padding: 20px; }
+	.lvd .lvd-h2--44 { font-size: 34px; }
+	.lvd .lvd-meter__count > span:first-child { font-size: 52px; }
+}
