@@ -177,6 +177,11 @@ body:has(.lvd-page) { overflow-x: clip; }
 /* Checkbox */
 .lvd .lvd-check { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding-top: 4px; margin: 0; font-weight: 400; }
 .lvd .lvd-check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--red); flex: none; }
+/* Themes color bold text (often blue). Bold text inherits its block's color,
+   and the Table Leader interest line is LEAD red. */
+.lvd-page strong, .lvd-page b { color: inherit !important; }
+.lvd-page .lvd-check strong { color: var(--red) !important; }
+.lvd-page .lvd-check input { accent-color: var(--red) !important; }
 
 /* Cards */
 .lvd .lvd-card { padding: 16px 18px; border-radius: 12px; border: 1px solid var(--hairline); font-size: 14px; color: var(--ink); text-wrap: pretty; }
