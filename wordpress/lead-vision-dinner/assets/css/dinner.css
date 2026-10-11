@@ -203,6 +203,32 @@ body:has(.lvd-page) { overflow-x: clip; }
 .lvd .lvd-btn--ghost { background: transparent; color: var(--ink); }
 .lvd .lvd-btn--ghost:hover { background: var(--app-bg); }
 .lvd .lvd-btn:focus-visible { outline: none; box-shadow: var(--ring); }
+
+/* Themes style every <button> (color, radius, padding, case). Pin ours. */
+.lvd-page .lvd-btn {
+	height: 44px !important; padding: 0 20px !important; margin: 0 !important; border-radius: 10px !important;
+	border: 1.5px solid transparent !important; font: 700 15px/1 var(--sans) !important;
+	letter-spacing: 0 !important; text-transform: none !important; text-decoration: none !important;
+	box-shadow: none !important; text-shadow: none !important; min-height: 0 !important; width: auto;
+}
+.lvd-page .lvd-btn--lg { height: 52px !important; padding: 0 28px !important; font-size: 16px !important; }
+.lvd-page .lvd-btn--block { width: 100% !important; }
+.lvd-page .lvd-btn--primary { background: var(--red) !important; color: #fff !important; }
+.lvd-page .lvd-btn--primary:hover, .lvd-page .lvd-btn--primary:focus { background: var(--red-text) !important; color: #fff !important; }
+.lvd-page .lvd-btn--secondary { background: #fff !important; color: var(--ink) !important; border-color: var(--ink) !important; }
+.lvd-page .lvd-btn--secondary:hover { background: var(--ink) !important; color: #fff !important; }
+.lvd-page .lvd-btn--ghost { background: transparent !important; color: var(--ink) !important; }
+.lvd-page .lvd-btn--ghost:hover { background: var(--app-bg) !important; color: var(--ink) !important; }
+.lvd-page .lvd-btn:focus-visible { box-shadow: var(--ring) !important; }
+.lvd-page .lvd-link, .lvd-page .lvd-release, .lvd-page .lvd-opt-row, .lvd-page .lvd-choice {
+	text-transform: none !important; letter-spacing: 0 !important; box-shadow: none !important; text-shadow: none !important; min-height: 0 !important;
+}
+.lvd-page .lvd-link { background: transparent !important; color: var(--red) !important; border: 0 !important; padding: 6px 0 !important; border-radius: 0 !important; font: 700 14px/1 var(--sans) !important; }
+.lvd-page .lvd-link:hover { color: var(--ink) !important; }
+.lvd-page .lvd-release { background: transparent !important; color: var(--body) !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; font: 700 14px/1.3 var(--sans) !important; text-decoration: underline !important; }
+.lvd-page .lvd-opt-row { background: transparent !important; color: var(--ink) !important; border: 0 !important; border-radius: 8px !important; padding: 10px 12px !important; font: inherit !important; width: 100% !important; }
+.lvd-page .lvd-opt-row:hover, .lvd-page .lvd-opt-row.is-active { background: var(--sand-tint) !important; }
+.lvd-page .lvd-opt-row--seatme { padding: 12px !important; border-top: 1px solid #eee !important; border-radius: 0 0 8px 8px !important; font-weight: 700 !important; font-size: 14px !important; color: var(--red) !important; }
 .lvd .lvd-btn[disabled] { opacity: .7; cursor: progress; }
 .lvd .lvd-spinner { width: 18px; height: 18px; border-radius: 999px; border: 2.5px solid rgba(255,255,255,.4); border-top-color: #fff; animation: lvd-spin .8s linear infinite; }
 @keyframes lvd-spin { to { transform: rotate(360deg); } }
@@ -305,7 +331,7 @@ body:has(.lvd-page) { overflow-x: clip; }
 .lvd .lvd-topbar__meta { font-size: 14px; color: var(--body); }
 .lvd .lvd-table-body { padding: 32px 16px 56px; max-width: 1440px; margin: 0 auto; }
 .lvd .lvd-loading { padding: 48px 0; color: var(--body); }
-.lvd .lvd-lost { display: flex; flex-direction: column; gap: 28px; max-width: 600px; }
+.lvd .lvd-lost { display: flex; flex-direction: column; gap: 28px; max-width: 600px; margin: 0 auto; }
 .lvd .lvd-tablegrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: start; }
 .lvd .lvd-side { display: flex; flex-direction: column; gap: 20px; order: -1; }
 .lvd [data-count] { white-space: nowrap; }
@@ -347,7 +373,7 @@ body:has(.lvd-page) { overflow-x: clip; }
 .lvd .lvd-help a:hover { color: var(--red); }
 
 @media (min-width: 900px) {
-	.lvd .lvd-topbar { padding: 20px 72px; }
+	.lvd .lvd-topbar { padding: 20px max(72px, calc((100% - 1440px) / 2 + 72px)); }
 	.lvd-page img.lvd-topbar__logo { height: 44px !important; }
 	.lvd .lvd-table-body { padding: 56px 72px 80px; }
 	.lvd .lvd-tablegrid { grid-template-columns: minmax(0, 1fr) 400px; gap: 48px; }
