@@ -35,13 +35,15 @@ Both boards are in **Fundraising › Vision Dinner – March 2027**, next to the
 | Vision Dinner Guests – March 2027 | person | Table Leaders, guests and spouses/+1s. A registrant and their +1 share a Party ID. |
 | Table Leaders – March 2027 | Table Leader household | Feeds the Table Leader search on the page. Linked two-way to Guests. |
 
-Columns added beyond the handoff's list, all needed for Monday to send the emails:
+Columns added beyond the handoff's list:
 
-- **Guests › Confirmation** (Send / Sent): the site sets Send on every registration and every edit.
-- **Guests › Guest link**: Table Leaders only, so their confirmation email can include the link.
-- **Table Leaders › Email, Mobile**: where the private link goes.
-- **Table Leaders › Guest link**: the full private URL.
-- **Table Leaders › Link email** (Send / Sent): the site sets Send when someone uses "Lost your link?".
+- **Guests › First name** and **Table Leaders › First name**: for greetings.
+- **Guests › Contact**: the person's All Contacts record (see below).
+- **Guests › Guest link**: Table Leaders only.
+- **Table Leaders › Email, Mobile, Guest link token, Guest link**: the private link and where it goes.
+- **All Contacts › VD Email** and **VD Guest Link**: what triggers the emails (see "Emails").
+
+The **Guests › Confirmation** and **Table Leaders › Link email** status columns are no longer used (version 1.2.0 sends email through All Contacts). They can be deleted.
 
 **Seats filled** is a Number column that the site recalculates after every change it makes. **Seats left** is a formula, 10 − Seats filled. The page itself always counts live from the Guests board, so a guest moved by hand in Monday shows correctly on the page right away. The Seats filled number in Monday catches up on the next registration for that table.
 
@@ -70,50 +72,35 @@ The label comes from `contact_type_label` under `monday.boards.all_contacts` in 
 - **Guests added from the private link:** Registered by = Table Leader link. **Edit** re-sends the confirmation. **Release** sets Status = Cancelled and posts an update on the item.
 - **Spam:** a hidden honeypot field, plus per-IP limits (12 registrations an hour, 5 link requests an hour, 60 table changes an hour).
 
-## Monday automations to create
+## Emails
 
-The site sends no email itself. Per your decision, Monday does all of it. Create these on the boards, using the Gmail or Outlook integration so the emails come from a LEAD address. In each recipe, "Email" is the Email column on that board.
+The site sends no email itself. Emails are **Monday Sequences on All Contacts**, sent from clint@leadcma.org like LEAD's student sequences (Tools → Sequences in Monday). Edit the wording there.
 
-**Guests board**
+| Sequence | Sent when | VD Email label |
+|---|---|---|
+| Vision Dinner 2027 — Guest Confirmation | a guest or +1 with an email registers, or a Table Leader edits them | Guest confirmation |
+| Vision Dinner 2027 — Table Leader Confirmation | a new Table Leader registers (includes {VD Guest Link} and the 5:30 pm arrival) | TL confirmation |
+| Vision Dinner 2027 — Your Guest Link | "Lost your link?", or a Table Leader registers again | TL link |
 
-1. **Guest confirmation:** When **Confirmation** changes to **Send**, and only if **Role** is *Guest* or *Spouse/+1*, send an email to **Email**, then set **Confirmation** to **Sent**.
-2. **Table Leader confirmation:** When **Confirmation** changes to **Send**, and only if **Role** is *Table Leader*, send an email to **Email** that includes **{Guest link}**, then set **Confirmation** to **Sent**.
-3. **Seat released:** When **Status** changes to **Cancelled**, notify the Table Leader Coordinator.
-4. **Dinner-week reminders** (Mon 1 pm, Wed 7 pm, day before 11 am, morning of 8 am, 2 hours before doors): these belong to the countdown task "Set up dinner email sequences in Monday".
+How it works: the site links the registrant to their All Contacts record, copies a Table Leader's private link to **VD Guest Link**, then sets **VD Email** to the label above. A Monday automation on All Contacts enrolls the contact in the matching sequence and sets VD Email to **Sent**. The site clears VD Email before setting it, so the same label twice in a row still fires.
 
-**Table Leaders board**
+### To switch the emails on
 
-5. **Lost link:** When **Link email** changes to **Send**, send an email to **Email** that includes **{Guest link}**, then set **Link email** to **Sent**.
+1. In each sequence, replace **[Venue name and address]** and check the wording.
+2. Activate the three sequences (they were created paused).
+3. On **All Contacts**, add three automations (Automate → "When status changes to something, enroll item in sequence"):
+   - When **VD Email** changes to **Guest confirmation** → enroll in *Vision Dinner 2027 — Guest Confirmation* → set VD Email to **Sent**.
+   - When **VD Email** changes to **TL confirmation** → enroll in *Vision Dinner 2027 — Table Leader Confirmation* → set VD Email to **Sent**.
+   - When **VD Email** changes to **TL link** → enroll in *Vision Dinner 2027 — Your Guest Link* → set VD Email to **Sent**.
 
-The site clears these columns before setting Send, so an automation that never reset them still fires next time.
+Until those automations exist, registrations still work; VD Email just sits on its label and no email goes out.
 
-### Email copy (from mockup 1e)
+### Still to set up
 
-Subject: **You're registered for the LEAD Africa Vision Dinner**
-
-> Hi {first name},
->
-> **Guest:** Thank you for registering for the LEAD Africa Vision Dinner. We've saved you a seat.
-> **Table Leader:** Thank you for leading a table at the LEAD Africa Vision Dinner. We're grateful for you, and we can't wait to see your table full.
->
-> **When:** Saturday, March 6, 2027. Reception 5:45 pm · Done by 8:15 pm
-> **Where:** [Venue name and address]
-> **Attire:** Business attire strongly suggested
->
-> *(Table Leaders only)* **Register your guests.** This link is just for you. Use it anytime to add guests and see who's at your table: {Guest link}
->
-> Your Table Leader Coordinator, [name], will call you in the next few days. *(Table Leaders)*
->
-> Grateful for you,
-> Clint Bieri
-> Co-founder and Executive Director, LEAD
->
-> The LEAD Program · 180 N Clayton St, Centerburg, OH 43011 · 1-866-LEADCMA
-> You're receiving this because you registered at leadcma.org/dinner.
-
-Lost-link email: "Here's your private link to register guests for the LEAD Africa Vision Dinner: {Guest link}. It's just for you. Use it anytime to add guests and see who's at your table."
-
-Monday's email builder can't reproduce the full photo-header design from mockup 1e. If you later want that exact design, it would mean sending from WordPress instead.
+- **Seat released:** on the Guests board, when **Status** changes to **Cancelled**, notify the Table Leader Coordinator (once they're named).
+- **Dinner-week reminders** (Mon 1 pm, Wed 7 pm, day before 11 am, morning of 8 am, 2 hours before doors): the countdown task "Set up dinner email sequences in Monday", once the venue is set.
+- People without an email (a +1 or a phone-only guest) get no email; the coordinator follows up.
+- A sequence may not re-send to a contact who already completed it. If an edited guest doesn't get an updated confirmation, that's why. The edit is still saved on the board.
 
 ## Next dinner
 

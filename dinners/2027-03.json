@@ -84,7 +84,6 @@
           "accessibility": "text_mm80vcts",
           "table_leader_interest": "boolean_mm804fnx",
           "registered_by": "color_mm80q1v3",
-          "confirmation": "color_mm80gzb8",
           "guest_link": "link_mm8012vm",
           "first_name": "text_mm81nv3e",
           "contact": "board_relation_mm815qm6"
@@ -105,8 +104,8 @@
           "seats_left": "formula_mm80bt8p",
           "guest_link_token": "text_mm80sjap",
           "guest_link": "link_mm80mana",
-          "link_email": "color_mm80pnmw",
-          "coordinator": "multiple_person_mm80f9zx"
+          "coordinator": "multiple_person_mm80f9zx",
+          "first_name": "text_mm81sjpt"
         }
       },
       "all_contacts": {
@@ -122,7 +121,14 @@
           "mobile": "text_mkx6hv3r",
           "church": "text_mkx6dz3w",
           "contact_type": "dropdown_mkxdjrrb",
-          "guests_link": "board_relation_mm81mj1p"
+          "guests_link": "board_relation_mm81mj1p",
+          "vd_email": "color_mm81s1mj",
+          "guest_link": "link_mm813h7e"
+        },
+        "sequences": {
+          "guest_confirmation": "875508e2-7812-4ca1-912f-12d4ddfae369",
+          "tl_confirmation": "c5afe23a-9fcc-4b01-a36b-151b4075f93c",
+          "tl_link": "5a186ca9-a59b-4c07-bef0-44c097fc4675"
         }
       }
     }
