@@ -208,6 +208,7 @@ class Registry {
 		}
 
 		$guest_id = self::save_guest( $existing, $person, $values );
+		self::link_contact( $guest_id, $person );
 		self::send_confirmation( $guest_id );
 
 		if ( $plus ) {
@@ -276,6 +277,7 @@ class Registry {
 				Config\column( 'guests', 'guest_link' )    => Monday::link( self::table_url( $token ), 'Register my guests' ),
 			)
 		);
+		self::link_contact( $guest_id, $person );
 		self::send_confirmation( $guest_id );
 
 		if ( $plus ) {
@@ -326,6 +328,7 @@ class Registry {
 		);
 
 		$id = self::save_guest( $existing, $plus, $values );
+		self::link_contact( $id, $plus );
 		if ( '' !== $plus['email'] ) {
 			self::send_confirmation( $id );
 		}
@@ -399,6 +402,7 @@ class Registry {
 		}
 
 		$id = self::save_guest( $existing, $person, $values );
+		self::link_contact( $id, $person );
 		if ( '' !== $person['email'] ) {
 			self::send_confirmation( $id );
 		}
@@ -432,12 +436,14 @@ class Registry {
 			$guest['id'],
 			array(
 				'name'                                   => $person['first'] . ' ' . $person['last'],
+				Config\column( 'guests', 'first_name' )    => $person['first'],
 				Config\column( 'guests', 'email' )         => Monday::email( $person['email'] ),
 				Config\column( 'guests', 'mobile' )        => Monday::phone( $person['phone'] ),
 				Config\column( 'guests', 'dietary' )       => $person['dietary'],
 				Config\column( 'guests', 'accessibility' ) => $person['access'],
 			)
 		);
+		self::link_contact( $guest['id'], $person );
 		if ( '' !== $person['email'] ) {
 			self::send_confirmation( $guest['id'] );
 		}
@@ -747,6 +753,96 @@ class Registry {
 	}
 
 	/**
+	 * Connect a Guests item to the person's All Contacts record (the master
+	 * record), matched by email, and tag it with the dinner's Contact Type.
+	 *
+	 * An existing contact keeps everything it has: the Contact Type label is
+	 * added alongside its other types, and only blank name, mobile and church
+	 * fields are filled. Student Status is never touched, because it drives
+	 * the student automations. People without an email are not linked, to
+	 * avoid duplicate contacts; the coordinator can link them by hand.
+	 *
+	 * A failure here never fails the registration; it leaves a note on the
+	 * Guests item instead.
+	 *
+	 * @param string $guest_id Guests item ID.
+	 * @param array  $person   Clean person.
+	 */
+	private static function link_contact( $guest_id, array $person ) {
+		$board = Config\board( 'all_contacts' );
+		if ( ! $board || '' === $person['email'] || '' === Config\column( 'guests', 'contact' ) ) {
+			return;
+		}
+
+		$col   = function ( $key ) {
+			return Config\column( 'all_contacts', $key );
+		};
+		$label = isset( $board['contact_type_label'] ) ? (string) $board['contact_type_label'] : 'Vision Dinner Guest';
+		$phone = '' !== $person['phone'] ? self::format_phone( $person['phone'] ) : '';
+
+		try {
+			$fields = array();
+			foreach ( array( 'email', 'first_name', 'last_name', 'mobile', 'church', 'contact_type' ) as $key ) {
+				$fields[] = '"' . $col( $key ) . '"';
+			}
+			$matches = Monday::find_by( $board, $col( 'email' ), $person['email'], 'id column_values(ids: [' . implode( ', ', $fields ) . ']) { id text }' );
+
+			$contact = null;
+			foreach ( $matches as $item ) {
+				if ( 0 === strcasecmp( Monday::text( $item, $col( 'email' ) ), $person['email'] ) ) {
+					$contact = $item;
+					break;
+				}
+			}
+
+			if ( $contact ) {
+				$contact_id = (string) $contact['id'];
+				$types      = array_values( array_filter( array_map( 'trim', explode( ',', Monday::text( $contact, $col( 'contact_type' ) ) ) ) ) );
+				$values     = array();
+				if ( ! in_array( $label, $types, true ) ) {
+					$types[]                         = $label;
+					$values[ $col( 'contact_type' ) ] = array( 'labels' => $types );
+				}
+				foreach ( array(
+					'first_name' => $person['first'],
+					'last_name'  => $person['last'],
+					'mobile'     => $phone,
+					'church'     => $person['church'],
+				) as $key => $value ) {
+					if ( '' !== $value && '' === Monday::text( $contact, $col( $key ) ) ) {
+						$values[ $col( $key ) ] = $value;
+					}
+				}
+				Monday::update_item( $board, $contact_id, $values );
+			} else {
+				$values = array_filter(
+					array(
+						$col( 'first_name' )   => $person['first'],
+						$col( 'last_name' )    => $person['last'],
+						$col( 'email' )        => Monday::email( $person['email'] ),
+						$col( 'mobile' )       => $phone,
+						$col( 'church' )       => $person['church'],
+						$col( 'contact_type' ) => array( 'labels' => array( $label ) ),
+					),
+					function ( $v ) {
+						return '' !== $v;
+					}
+				);
+				$contact_id = Monday::create_item( $board, $person['first'] . ' ' . $person['last'], $values );
+			}
+
+			Monday::update_item( Config\board( 'guests' ), $guest_id, array( Config\column( 'guests', 'contact' ) => Monday::relation( $contact_id ) ) );
+		} catch ( Monday_Exception $e ) {
+			error_log( '[lead-vision-dinner] All Contacts link failed for guest ' . $guest_id . ': ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			try {
+				Monday::add_update( $guest_id, 'The website could not link this guest to All Contacts. Please link them by hand.' );
+			} catch ( Monday_Exception $ignored ) {
+				// Already logged; the registration itself succeeded.
+			}
+		}
+	}
+
+	/**
 	 * Flip Confirmation to Send so the Monday automation emails it.
 	 *
 	 * @param string $guest_id Item ID.
@@ -873,6 +969,9 @@ class Registry {
 			Config\column( 'guests', 'dietary' )       => $person['dietary'],
 			Config\column( 'guests', 'accessibility' ) => $person['access'],
 		);
+		if ( '' !== Config\column( 'guests', 'first_name' ) ) {
+			$values[ Config\column( 'guests', 'first_name' ) ] = $person['first'];
+		}
 		if ( '' !== $person['church'] ) {
 			$values[ Config\column( 'guests', 'church' ) ] = $person['church'];
 		}

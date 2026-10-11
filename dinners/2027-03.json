@@ -85,7 +85,9 @@
           "table_leader_interest": "boolean_mm804fnx",
           "registered_by": "color_mm80q1v3",
           "confirmation": "color_mm80gzb8",
-          "guest_link": "link_mm8012vm"
+          "guest_link": "link_mm8012vm",
+          "first_name": "text_mm81nv3e",
+          "contact": "board_relation_mm815qm6"
         }
       },
       "table_leaders": {
@@ -105,6 +107,22 @@
           "guest_link": "link_mm80mana",
           "link_email": "color_mm80pnmw",
           "coordinator": "multiple_person_mm80f9zx"
+        }
+      },
+      "all_contacts": {
+        "name": "All Contacts",
+        "id": 18293116953,
+        "url": "https://the-lead-program.monday.com/boards/18293116953",
+        "group": "group_mm1tbjyd",
+        "contact_type_label": "Vision Dinner Guest",
+        "columns": {
+          "email": "contact_email",
+          "first_name": "text_mkx5348f",
+          "last_name": "text_mkx5p9v6",
+          "mobile": "text_mkx6hv3r",
+          "church": "text_mkx6dz3w",
+          "contact_type": "dropdown_mkxdjrrb",
+          "guests_link": "board_relation_mm81mj1p"
         }
       }
     }

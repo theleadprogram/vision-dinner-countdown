@@ -47,6 +47,19 @@ Columns added beyond the handoff's list, all needed for Monday to send the email
 
 How a seat is counted: a seat is anyone connected to the Table Leader whose Status isn't Cancelled. That includes the Table Leader and their spouse. A Table Leader couple starts at 2 of 10. The guest page lists the Table Leader first, labeled "Table Leader", with no Edit link. Changes to their own record go through the coordinator.
 
+### All Contacts (the master record)
+
+Every registrant with an email is matched to **All Contacts** by email and linked through the Guests board's **Contact** column (All Contacts shows the link back as "link to Vision Dinner Guests – March 2027").
+
+- **Existing contact:** "Vision Dinner Guest" is **added** to their Contact Type alongside what's already there. Only blank First Name, Last Name, Mobile Phone Number and Church Name fields are filled; nothing on file is overwritten.
+- **New contact:** created in "Incoming Form Group (do not delete)" with name, email, mobile, church and Contact Type = Vision Dinner Guest.
+- **Student Status and Marketing Status are never set**, since Student Status drives the student automations.
+- **People without an email** (a +1, or a guest a Table Leader added by phone only) aren't linked, to avoid duplicate contacts. The coordinator can link them by hand.
+- **After the gift import**, "Vision Donor" is added to the contacts who gave. That's part of the import, not the website.
+- If linking fails, the registration still goes through, and a note on the Guests item asks for the link to be made by hand.
+
+The label comes from `contact_type_label` under `monday.boards.all_contacts` in the dinner file.
+
 ### Rules the site follows
 
 - **One record per person.** If the email is already on the Guests board, that item is updated instead of a new one being created. A spouse/+1 without an email is matched by Party ID.
