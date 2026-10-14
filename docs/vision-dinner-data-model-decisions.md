@@ -91,3 +91,12 @@ Met and No reply have no VD Table Leader equivalent and stay on the recruiting b
 - **Every registrant must give an email**: the registrant, a +1, and a guest a Table Leader adds. Without an email there is nothing to match a contact on.
 - **A shared email is one household (option B).** A +1 who uses the registrant's email gets their own Guests item, tied by Party ID, and is recorded as Spouse Name on the email owner's contact instead of getting their own contact. One confirmation goes to the shared inbox. The same applies whenever an email already belongs to a contact with a different first name: the person is added, not merged, and noted on that contact. This is the one exception to decision 3.
 - Website plugin 1.4.0 no longer writes VD Email or VD Guest Link, so both can be removed from All Contacts once the three waves are finished.
+
+## Addendum, October 14, 2026 (later the same day)
+
+- **The boards moved early, as copies.** New Guests, Table Leaders and Table Leader Recruiting boards were created in All LEAD Contacts, folder Vision Dinner – March 2027, with the same columns. The recruiting copy carries all 83 prospects with their Stage, dates and contact links. The Fundraising boards stay as they were; website plugin 1.5.0 writes only to the new ones. Vision Dinner 2027, VD Wave, VD Pool and Stage are unchanged, so the Pre-Call Letter sequence is unaffected.
+- **Emails are Gmail automations on the new boards (decision 4).** Guest confirmation, Table Leader confirmation with the guest link, the guest-link resend, and five dinner-week reminders each for guests and Table Leaders, all sent from clint@leadcma.org. Each needs the Gmail account chosen once in Monday.
+- **Dinner-week reminders run off a Dinner date column on Guests**, set by the website and cleared when Status is Cancelled.
+- **Seat released** notifies Clint until the Table Leader Coordinator is named.
+- **Live-call registration is built (decision 7).** Private Register links on the recruiting board, no login. Open items: the build-order tests for VD Table Leader automations still apply after the waves.
+- **New contacts go straight into All LEAD Contacts**, never the Incoming Form Group, whose LEAD Learn intake automation set Student Status. New contacts get Marketing Status = Marketing contact; existing contacts only when it is blank.

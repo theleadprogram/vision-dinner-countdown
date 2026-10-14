@@ -21,6 +21,7 @@
 		leadersFailed: false,
 		selected: null,     // { id, name, church, seats_left }
 		seatMe: false,
+		live: null,         // Register token on a live-call registration
 		active: -1          // keyboard highlight in the list
 	};
 
@@ -45,6 +46,38 @@
 		if (e.target.name === 'plus_one') form.querySelector('[data-plus]').hidden = !e.target.checked;
 	});
 	applyRole();
+
+	/* ---------- Live-call registration (?r=… from the recruiting board) ---------- */
+	var liveBox = form.querySelector('[data-live]');
+	var liveToken = new URLSearchParams(window.location.search).get('r') || '';
+	if (/^[a-f0-9]{40}$/.test(liveToken)) {
+		L.api('prospect?r=' + encodeURIComponent(liveToken)).then(function (res) {
+			liveBox.hidden = false;
+			if (!res.ok) {
+				liveBox.textContent = res.status === 403
+					? 'This Register link isn\'t valid. Copy the current link from the person\'s item on the recruiting board.'
+					: 'We couldn\'t load this person\'s details. Refresh the page to try again.';
+				return;
+			}
+			var p = res.data;
+			state.live = liveToken;
+			form.querySelector('input[name="role"][value="leader"]').checked = true;
+			form.querySelector('[data-role-choice]').hidden = true;
+			applyRole();
+			['first', 'last', 'email', 'phone', 'church'].forEach(function (key) {
+				var input = form.querySelector('[name="' + key + '"]');
+				if (input && p[key]) input.value = p[key];
+			});
+			liveBox.innerHTML = '';
+			var title = document.createElement('strong');
+			title.textContent = 'Live-call registration: ' + p.name + '. ';
+			liveBox.appendChild(title);
+			liveBox.appendChild(document.createTextNode(
+				'Their details are filled in from Monday. Confirm each one with them, add their address and spouse, then register them as a Table Leader. Their Stage on the recruiting board changes to Yes.' +
+				(p.stage === 'Yes' ? ' (Their Stage is already Yes.)' : '')
+			));
+		});
+	}
 
 	/* ---------- Table Leader search ---------- */
 	function loadLeaders() {
@@ -227,6 +260,7 @@
 		}
 		L.clearErrors(form);
 
+		if (state.live) v.r = state.live;
 		v.leader_id = state.selected ? state.selected.id : '';
 		v.seat_me = state.seatMe;
 		if (v.role !== 'guest') { v.leader_id = ''; v.seat_me = false; v.interest = false; }
@@ -284,6 +318,10 @@
 		form.reset();
 		state.selected = null;
 		state.seatMe = false;
+		// "Register someone else" leaves the live call behind.
+		state.live = null;
+		liveBox.hidden = true;
+		form.querySelector('[data-role-choice]').hidden = false;
 		form.querySelector('[data-plus]').hidden = true;
 		form.querySelector('[data-full-note]').hidden = true;
 		form.querySelector('[data-seatme-note]').hidden = true;

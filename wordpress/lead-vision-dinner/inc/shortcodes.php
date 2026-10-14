@@ -194,6 +194,7 @@ function register_form() {
 	?>
 	<form class="lvd-form" data-form novalidate>
 		<div class="lvd-banner" data-banner role="alert" hidden>Something went wrong. Please try again, or call 1-866-LEADCMA.</div>
+		<div class="lvd-card lvd-card--redtop" data-live role="status" hidden></div>
 
 		<header class="lvd-stack lvd-stack--10">
 			<div class="lvd-eyebrow lvd-eyebrow--red">Register · leadcma.org/dinner</div>
@@ -201,7 +202,7 @@ function register_form() {
 			<p class="lvd-sub">Dinner is our gift to you. It takes about two minutes.</p>
 		</header>
 
-		<fieldset class="lvd-stack lvd-stack--12">
+		<fieldset class="lvd-stack lvd-stack--12" data-role-choice>
 			<legend class="lvd-h3">I'm registering as</legend>
 			<div class="lvd-grid lvd-grid--200 lvd-grid--12" role="radiogroup">
 				<label class="lvd-choice">

@@ -71,8 +71,8 @@
       },
       "guests": {
         "name": "Vision Dinner Guests – March 2027",
-        "id": 18434896459,
-        "url": "https://the-lead-program.monday.com/boards/18434896459",
+        "id": 18435367875,
+        "url": "https://the-lead-program.monday.com/boards/18435367875",
         "group": "topics",
         "columns": {
           "status": "color_mm80981n",
@@ -91,13 +91,18 @@
           "guest_link": "link_mm8012vm",
           "first_name": "text_mm81nv3e",
           "contact": "board_relation_mm815qm6",
-          "confirmation": "color_mm80gzb8"
+          "confirmation": "color_mm80gzb8",
+          "dinner_date": "dinner_date"
+        },
+        "previous": {
+          "id": 18434896459,
+          "note": "Fundraising workspace copy, used until plugin 1.5.0. Kept as it was; the website no longer writes to it."
         }
       },
       "table_leaders": {
         "name": "Table Leaders – March 2027",
-        "id": 18434896452,
-        "url": "https://the-lead-program.monday.com/boards/18434896452",
+        "id": 18435367973,
+        "url": "https://the-lead-program.monday.com/boards/18435367973",
         "group": "topics",
         "columns": {
           "status": "color_mm80gw8f",
@@ -113,7 +118,29 @@
           "first_name": "text_mm81sjpt",
           "link_email": "color_mm80pnmw",
           "contact": "board_relation_mm848whq"
+        },
+        "previous": {
+          "id": 18434896452,
+          "note": "Fundraising workspace copy, used until plugin 1.5.0."
         }
+      },
+      "recruiting": {
+        "name": "Table Leader Recruiting – March 2027",
+        "id": 18435368954,
+        "url": "https://the-lead-program.monday.com/boards/18435368954",
+        "previous": {
+          "id": 18435121354,
+          "note": "Fundraising workspace copy. Work in the All LEAD Contacts copy from October 14, 2026."
+        },
+        "columns": {
+          "stage": "color_mm822z42",
+          "contact": "board_relation_mm82exjb",
+          "email": "email_mm82eyjb",
+          "mobile": "phone_mm82ga4t",
+          "register_token": "reg_token",
+          "register_link": "reg_link"
+        },
+        "stage_yes": "Yes"
       },
       "all_contacts": {
         "name": "All Contacts",
@@ -144,6 +171,7 @@
         "marketing_status_note": "Marketing Status index 1 = Marketing contact. Set on new contacts, and on existing contacts only when Marketing Status is blank, so Unsubscribed and Not marketing contact are never overwritten.",
         "sequences_note": "These three sequences are inactive and will be retired (decision 4); the website no longer uses them."
       }
-    }
+    },
+    "workspace_note": "Guests, Table Leaders and Recruiting live in All LEAD Contacts (13076717), folder Vision Dinner – March 2027 (21636035), from plugin 1.5.0. The Countdown board stays in Fundraising."
   }
 }

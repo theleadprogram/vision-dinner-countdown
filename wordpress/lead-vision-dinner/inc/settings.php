@@ -61,7 +61,8 @@ function fields() {
 		'links'       => array(
 			'title'  => 'Pages',
 			'fields' => array(
-				'table_page_url' => array( 'Private guest page', 'The page holding [lead_vision_dinner_table]. Table Leaders\' private links point here.', 'url', '/dinner/table/' ),
+				'register_page_url' => array( 'Registration page', 'The page holding [lead_vision_dinner]. Live-call Register links on the recruiting board point here.', 'url', '/dinner/' ),
+				'table_page_url'    => array( 'Private guest page', 'The page holding [lead_vision_dinner_table]. Table Leaders\' private links point here.', 'url', '/dinner/table/' ),
 			),
 		),
 	);
@@ -132,6 +133,26 @@ add_action(
 	}
 );
 
+// "Make Register links" on the settings page.
+add_action(
+	'admin_post_lead_vd_register_links',
+	function () {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Not allowed.' );
+		}
+		check_admin_referer( 'lead_vd_register_links' );
+		try {
+			$made   = \LEAD\VisionDinner\Registry::issue_register_links();
+			$notice = 1 === $made ? 'Made 1 Register link.' : 'Made ' . $made . ' Register links.';
+		} catch ( \LEAD\VisionDinner\Monday_Exception $e ) {
+			$notice = 'Monday.com refused: ' . $e->getMessage();
+		}
+		set_transient( 'lead_vd_notice', $notice, 60 );
+		wp_safe_redirect( admin_url( 'options-general.php?page=lead-vision-dinner' ) );
+		exit;
+	}
+);
+
 add_action(
 	'admin_enqueue_scripts',
 	function ( $hook ) {
@@ -176,6 +197,9 @@ function render_page() {
 	$dinner  = Config\dinner();
 	$guests  = Config\board( 'guests' );
 	$leaders = Config\board( 'table_leaders' );
+	$recruit = Config\board( 'recruiting' );
+	$notice  = get_transient( 'lead_vd_notice' );
+	delete_transient( 'lead_vd_notice' );
 	?>
 	<div class="wrap">
 		<h1>Vision Dinner</h1>
@@ -192,7 +216,21 @@ function render_page() {
 		<p>
 			<?php if ( $guests ) : ?><a href="<?php echo esc_url( $guests['url'] ); ?>" target="_blank" rel="noopener">Guests board</a><?php endif; ?>
 			<?php if ( $leaders ) : ?> · <a href="<?php echo esc_url( $leaders['url'] ); ?>" target="_blank" rel="noopener">Table Leaders board</a><?php endif; ?>
+			<?php if ( $recruit ) : ?> · <a href="<?php echo esc_url( $recruit['url'] ); ?>" target="_blank" rel="noopener">Recruiting board</a><?php endif; ?>
 		</p>
+		<?php if ( $notice ) : ?>
+			<div class="notice notice-info inline"><p><?php echo esc_html( $notice ); ?></p></div>
+		<?php endif; ?>
+
+		<?php if ( $recruit ) : ?>
+			<h2>Live-call registration</h2>
+			<p>Each recruiting-board item has a private <strong>Register link</strong>. Open it during a call to register that person as a Table Leader: the form fills in from their All Contacts record, and submitting it sets their Stage to Yes. Add someone to the recruiting board, then make their link here.</p>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="lead_vd_register_links">
+				<?php wp_nonce_field( 'lead_vd_register_links' ); ?>
+				<?php submit_button( 'Make Register links for new prospects', 'secondary', 'submit', false ); ?>
+			</form>
+		<?php endif; ?>
 
 		<form method="post" action="options.php">
 			<?php settings_fields( 'lead_vd' ); ?>

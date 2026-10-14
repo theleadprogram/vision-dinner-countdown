@@ -150,8 +150,11 @@ class Registry {
 	 * @throws Validation_Exception When a field is invalid.
 	 */
 	public static function register( array $in ) {
-		$role   = isset( $in['role'] ) && 'leader' === $in['role'] ? 'leader' : 'guest';
-		$errors = array();
+		// A live-call registration opens from a recruiting-board item's private
+		// link, so it's always a Table Leader and the contact is already known.
+		$prospect = isset( $in['r'] ) && '' !== (string) $in['r'] ? self::prospect_by_token( (string) $in['r'] ) : null;
+		$role     = $prospect || ( isset( $in['role'] ) && 'leader' === $in['role'] ) ? 'leader' : 'guest';
+		$errors   = array();
 		$person = self::clean_person( $in, '', true, $errors );
 		$plus   = ! empty( $in['plus_one'] ) ? self::clean_person( $in, 'plus_', false, $errors ) : null;
 		if ( $plus && '' === $plus['email'] && ! isset( $errors['plus_email'] ) ) {
@@ -176,9 +179,15 @@ class Registry {
 			throw new Validation_Exception( $errors );
 		}
 
-		return 'leader' === $role
-			? self::register_leader( $person, $plus, $address )
-			: self::register_guest( $person, $plus, $address, $leader, ! empty( $in['interest'] ) );
+		if ( 'guest' === $role ) {
+			return self::register_guest( $person, $plus, $address, $leader, ! empty( $in['interest'] ) );
+		}
+
+		$result = self::register_leader( $person, $plus, $address, $prospect );
+		if ( $prospect ) {
+			self::mark_prospect_yes( $prospect, $result );
+		}
+		return $result;
 	}
 
 	/**
@@ -211,10 +220,10 @@ class Registry {
 		}
 
 		$guest_id = self::save_guest( $existing, $person, $values );
-		self::confirm( $guest_id, $person, $address );
+		$contact_id = self::confirm( $guest_id, $person, $address );
 
 		if ( $plus ) {
-			self::save_plus_one( $plus, $person, $party, $address, $leader_id, $leader_id ? 'Assigned' : 'Needs a seat', 'Self' );
+			self::save_plus_one( $plus, $person, $party, $address, $leader_id, $leader_id ? 'Assigned' : 'Needs a seat', 'Self', $contact_id );
 		}
 
 		self::recount( array_unique( array_filter( array_merge( $before, array( $leader_id ) ) ) ) );
@@ -226,12 +235,14 @@ class Registry {
 	}
 
 	/**
-	 * @param array      $person  Clean person.
-	 * @param array|null $plus    Clean spouse.
-	 * @param string     $address Mailing address.
+	 * @param array      $person   Clean person.
+	 * @param array|null $plus     Clean spouse.
+	 * @param string     $address  Mailing address.
+	 * @param array|null $prospect Recruiting-board item for a live-call registration.
 	 * @return array
 	 */
-	private static function register_leader( array $person, $plus, $address ) {
+	private static function register_leader( array $person, $plus, $address, $prospect = null ) {
+		$source = $prospect ? 'Staff' : 'Self';
 		$tl       = Config\board( 'table_leaders' );
 		$existing = self::find_leader_by_email( $person['email'] );
 		$name     = self::household_name( $person, $plus );
@@ -276,17 +287,20 @@ class Registry {
 				Config\column( 'guests', 'table_leader' )  => Monday::relation( $leader_id ),
 				Config\column( 'guests', 'seating' )       => Monday::status( 'Assigned' ),
 				Config\column( 'guests', 'party_id' )      => $party,
-				Config\column( 'guests', 'registered_by' ) => Monday::status( 'Self' ),
+				Config\column( 'guests', 'registered_by' ) => Monday::status( $source ),
 				Config\column( 'guests', 'guest_link' )    => Monday::link( self::table_url( $token ), 'Register my guests' ),
 			)
 		);
-		$contact_id = self::confirm( $guest_id, $person, $address );
+		$contact_id = self::confirm( $guest_id, $person, $address, true, $prospect ? $prospect['contact_id'] : null );
 		if ( $contact_id && '' !== Config\column( 'table_leaders', 'contact' ) ) {
 			Monday::update_item( $tl, $leader_id, array( Config\column( 'table_leaders', 'contact' ) => Monday::relation( $contact_id ) ) );
 		}
+		if ( $prospect && '' !== $prospect['email'] && 0 !== strcasecmp( $prospect['email'], $person['email'] ) ) {
+			Monday::add_update( $guest_id, 'Registered on a call with the email ' . $person['email'] . '. All Contacts has ' . $prospect['email'] . ' and was not changed; update it there if the new one is right.' );
+		}
 
 		if ( $plus ) {
-			self::save_plus_one( $plus, $person, $party, $address, $leader_id, 'Assigned', 'Self' );
+			self::save_plus_one( $plus, $person, $party, $address, $leader_id, 'Assigned', $source, $contact_id );
 		}
 
 		self::recount( array( $leader_id ) );
@@ -314,8 +328,9 @@ class Registry {
 	 * @param string|null $leader_id Table Leader item ID.
 	 * @param string      $seating   Seating label.
 	 * @param string      $source    Registered by label.
+	 * @param string|null $primary_contact The registrant's All Contacts item ID.
 	 */
-	private static function save_plus_one( array $plus, array $primary, $party, $address, $leader_id, $seating, $source ) {
+	private static function save_plus_one( array $plus, array $primary, $party, $address, $leader_id, $seating, $source, $primary_contact = null ) {
 		$shared   = 0 === strcasecmp( $plus['email'], $primary['email'] );
 		$existing = $shared ? null : self::find_guest_for( $plus['email'], $plus['first'] );
 		if ( ! $existing ) {
@@ -337,6 +352,19 @@ class Registry {
 		);
 
 		$id = self::save_guest( $existing, $plus, $values );
+
+		// Sharing the registrant's inbox: they're the registrant's household,
+		// recorded on the registrant's own contact (which may hold a different
+		// email after a live call), with no second confirmation.
+		$household = $shared && $primary_contact ? self::contact_by_id( $primary_contact ) : null;
+		if ( $household && ! self::same_person( Monday::text( $household, Config\column( 'all_contacts', 'first_name' ) ), $plus['first'] ) ) {
+			try {
+				self::record_shared_email( $id, $household, $plus );
+			} catch ( Monday_Exception $e ) {
+				error_log( '[lead-vision-dinner] Spouse Name write failed for guest ' . $id . ': ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			}
+			return;
+		}
 		self::confirm( $id, $plus, $address, ! $shared );
 	}
 
@@ -468,7 +496,7 @@ class Registry {
 		Monday::update_item(
 			Config\board( 'guests' ),
 			$guest['id'],
-			array( Config\column( 'guests', 'status' ) => Monday::status( 'Cancelled' ) )
+			self::without_dinner_date( array( Config\column( 'guests', 'status' ) => Monday::status( 'Cancelled' ) ) )
 		);
 		Monday::add_update( $guest['id'], 'Seat released by ' . $leader['name'] . ' from their private guest link.' );
 
@@ -516,6 +544,159 @@ class Registry {
 		}
 
 		self::trigger( Config\board( 'table_leaders' ), $leader['id'], Config\column( 'table_leaders', 'link_email' ) );
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Live-call registration (leadcma.org/dinner?r=…)
+	 *
+	 * Each item on the recruiting board gets a private Register link. Opened
+	 * during a call, it prefills the form from the person's All Contacts
+	 * record; submitting it registers them as a Table Leader, updates that
+	 * same contact (never matched by email, so a new email can't create a
+	 * duplicate) and sets the item's Stage to Yes.
+	 * ------------------------------------------------------------------ */
+
+	/**
+	 * What the form needs to prefill a live-call registration.
+	 *
+	 * @param string $token Register token.
+	 * @return array
+	 * @throws Token_Exception When the token matches nobody.
+	 */
+	public static function prospect( $token ) {
+		$p = self::prospect_by_token( $token );
+		return array(
+			'name'   => $p['name'],
+			'first'  => $p['first'],
+			'last'   => $p['last'],
+			'email'  => $p['email'],
+			'phone'  => self::format_phone( $p['phone'] ),
+			'church' => $p['church'],
+			'stage'  => $p['stage'],
+		);
+	}
+
+	/**
+	 * @param string $token Register token.
+	 * @return array id, name, contact_id, first, last, email, phone, church, stage.
+	 * @throws Token_Exception When the token matches nobody.
+	 */
+	private static function prospect_by_token( $token ) {
+		$token = (string) $token;
+		$board = Config\board( 'recruiting' );
+		$col   = function ( $key ) {
+			return Config\column( 'recruiting', $key );
+		};
+		if ( ! $board || '' === $col( 'register_token' ) || ! preg_match( '/\A[a-f0-9]{40}\z/', $token ) ) {
+			throw new Token_Exception( 'Malformed register token.' );
+		}
+
+		$fields = 'id name column_values(ids: ["' . implode( '", "', array_filter( array( $col( 'register_token' ), $col( 'stage' ), $col( 'contact' ), $col( 'email' ), $col( 'mobile' ) ) ) ) . '"]) { id text ... on BoardRelationValue { linked_item_ids } }';
+		foreach ( Monday::find_by( $board, $col( 'register_token' ), $token, $fields ) as $item ) {
+			if ( ! hash_equals( Monday::text( $item, $col( 'register_token' ) ), $token ) ) {
+				continue;
+			}
+
+			$parts    = preg_split( '/\s+/', trim( (string) $item['name'] ), 2 );
+			$contacts = Monday::linked_ids( $item, $col( 'contact' ) );
+			$p        = array(
+				'id'         => (string) $item['id'],
+				'name'       => (string) $item['name'],
+				'contact_id' => $contacts ? $contacts[0] : null,
+				'first'      => isset( $parts[0] ) ? $parts[0] : '',
+				'last'       => isset( $parts[1] ) ? $parts[1] : '',
+				'email'      => Monday::text( $item, $col( 'email' ) ),
+				'phone'      => self::phone_digits( Monday::text( $item, $col( 'mobile' ) ) ),
+				'church'     => '',
+				'stage'      => Monday::text( $item, $col( 'stage' ) ),
+			);
+
+			// The contact is the master record: prefer its details.
+			$contact = $p['contact_id'] ? self::contact_by_id( $p['contact_id'] ) : null;
+			if ( $contact ) {
+				foreach ( array( 'first' => 'first_name', 'last' => 'last_name', 'email' => 'email', 'church' => 'church' ) as $key => $column ) {
+					$value = Monday::text( $contact, Config\column( 'all_contacts', $column ) );
+					if ( '' !== $value ) {
+						$p[ $key ] = $value;
+					}
+				}
+				$mobile = self::phone_digits( Monday::text( $contact, Config\column( 'all_contacts', 'mobile' ) ) );
+				if ( 10 === strlen( $mobile ) ) {
+					$p['phone'] = $mobile;
+				}
+			} else {
+				$p['contact_id'] = null;
+			}
+			return $p;
+		}
+
+		throw new Token_Exception( 'No recruiting item has this register token.' );
+	}
+
+	/**
+	 * After a live-call registration: Stage = Yes and a note on the item.
+	 * A failure here never fails the registration.
+	 *
+	 * @param array $prospect From prospect_by_token().
+	 * @param array $result   What register_leader() returned.
+	 */
+	private static function mark_prospect_yes( array $prospect, array $result ) {
+		$board = Config\board( 'recruiting' );
+		$yes   = isset( $board['stage_yes'] ) ? (string) $board['stage_yes'] : 'Yes';
+		try {
+			if ( '' !== Config\column( 'recruiting', 'stage' ) ) {
+				Monday::update_item( $board, $prospect['id'], array( Config\column( 'recruiting', 'stage' ) => Monday::status( $yes ) ) );
+			}
+			Monday::add_update(
+				$prospect['id'],
+				! empty( $result['returned'] )
+					? 'Registered on a call from this item, but they were already a Table Leader, so nothing was changed. Their private guest link was emailed to the address on file.'
+					: 'Registered as a Table Leader on a call from this item. Their confirmation and private guest link are on the way by email.'
+			);
+		} catch ( Monday_Exception $e ) {
+			error_log( '[lead-vision-dinner] Could not mark recruiting item ' . $prospect['id'] . ' Yes: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		}
+	}
+
+	/**
+	 * Give every recruiting-board item without a Register link a new one.
+	 *
+	 * @return int How many links were made.
+	 * @throws Monday_Exception On failure.
+	 */
+	public static function issue_register_links() {
+		$board = Config\board( 'recruiting' );
+		$token = Config\column( 'recruiting', 'register_token' );
+		$link  = Config\column( 'recruiting', 'register_link' );
+		if ( ! $board || '' === $token || '' === $link ) {
+			return 0;
+		}
+
+		$made = 0;
+		foreach ( Monday::all_items( $board, 'id column_values(ids: ["' . $token . '"]) { id text }' ) as $item ) {
+			if ( preg_match( '/\A[a-f0-9]{40}\z/', Monday::text( $item, $token ) ) ) {
+				continue;
+			}
+			$new = self::token();
+			Monday::update_item(
+				$board,
+				(string) $item['id'],
+				array(
+					$token => $new,
+					$link  => Monday::link( self::register_url( $new ), 'Register on a call' ),
+				)
+			);
+			++$made;
+		}
+		return $made;
+	}
+
+	/**
+	 * @param string $token Register token.
+	 * @return string
+	 */
+	public static function register_url( $token ) {
+		return add_query_arg( 'r', $token, Settings\get( 'register_page_url' ) );
 	}
 
 	/* ---------------------------------------------------------------------
@@ -772,20 +953,25 @@ class Registry {
 	 * @param string      $guest_id Guests item ID.
 	 * @param array       $person   Clean person.
 	 * @param string|null $address  Mailing address, or null when not collected.
+	 * @param string|null $known    All Contacts item ID already known (a live
+	 *                              call from the recruiting board): used as is,
+	 *                              even when the email typed differs from it.
 	 * @return string|null All Contacts item ID.
 	 */
-	private static function link_contact( $guest_id, array $person, $address ) {
-		if ( ! Config\board( 'all_contacts' ) || '' === $person['email'] || '' === Config\column( 'guests', 'contact' ) ) {
+	private static function link_contact( $guest_id, array $person, $address, $known = null ) {
+		if ( ! Config\board( 'all_contacts' ) || '' === Config\column( 'guests', 'contact' ) || ( '' === $person['email'] && ! $known ) ) {
 			return null;
 		}
 
 		try {
-			$contact = self::find_contact( $person['email'] );
-			if ( $contact && ! self::same_person( Monday::text( $contact, Config\column( 'all_contacts', 'first_name' ) ), $person['first'] ) ) {
-				self::record_shared_email( $guest_id, $contact, $person );
-				return null;
+			if ( ! $known ) {
+				$contact = self::find_contact( $person['email'] );
+				if ( $contact && ! self::same_person( Monday::text( $contact, Config\column( 'all_contacts', 'first_name' ) ), $person['first'] ) ) {
+					self::record_shared_email( $guest_id, $contact, $person );
+					return null;
+				}
 			}
-			$contact_id = self::find_or_create_contact( $person, $address );
+			$contact_id = self::find_or_create_contact( $person, $address, $known );
 			Monday::update_item( Config\board( 'guests' ), $guest_id, array( Config\column( 'guests', 'contact' ) => Monday::relation( $contact_id ) ) );
 			return $contact_id;
 		} catch ( Monday_Exception $e ) {
@@ -805,10 +991,11 @@ class Registry {
 	 *
 	 * @param array       $person  Clean person with an email.
 	 * @param string|null $address Mailing address, or null.
+	 * @param string|null $known   Contact item ID to update instead of matching by email.
 	 * @return string Item ID.
 	 * @throws Monday_Exception On failure.
 	 */
-	private static function find_or_create_contact( array $person, $address ) {
+	private static function find_or_create_contact( array $person, $address, $known = null ) {
 		$board   = Config\board( 'all_contacts' );
 		$col     = function ( $key ) {
 			return Config\column( 'all_contacts', $key );
@@ -839,7 +1026,7 @@ class Registry {
 		);
 		unset( $details[''] );
 
-		$contact = self::find_contact( $person['email'] );
+		$contact = $known ? self::contact_by_id( $known ) : self::find_contact( $person['email'] );
 
 		if ( $contact ) {
 			$values = $details;
@@ -916,14 +1103,38 @@ class Registry {
 			return null;
 		}
 		$email_col = Config\column( 'all_contacts', 'email' );
-		$ids       = array_filter( array( $email_col, Config\column( 'all_contacts', 'contact_type' ), Config\column( 'all_contacts', 'first_name' ), Config\column( 'all_contacts', 'spouse_name' ), Config\column( 'all_contacts', 'marketing_status' ) ) );
-		$fields    = '"' . implode( '", "', $ids ) . '"';
-		foreach ( Monday::find_by( Config\board( 'all_contacts' ), $email_col, $email, 'id name column_values(ids: [' . $fields . ']) { id text value }' ) as $item ) {
+		foreach ( Monday::find_by( Config\board( 'all_contacts' ), $email_col, $email, self::contact_fields() ) as $item ) {
 			if ( 0 === strcasecmp( Monday::text( $item, $email_col ), $email ) ) {
 				return $item;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * The All Contacts item with this ID, or null.
+	 *
+	 * @param string $id Item ID.
+	 * @return array|null
+	 */
+	private static function contact_by_id( $id ) {
+		$items = Monday::items( array( (string) $id ), self::contact_fields() );
+		return $items ? $items[0] : null;
+	}
+
+	/**
+	 * GraphQL selection for an All Contacts item.
+	 *
+	 * @return string
+	 */
+	private static function contact_fields() {
+		$ids = array();
+		foreach ( array( 'email', 'contact_type', 'first_name', 'last_name', 'mobile', 'church', 'spouse_name', 'marketing_status' ) as $key ) {
+			if ( '' !== Config\column( 'all_contacts', $key ) ) {
+				$ids[] = Config\column( 'all_contacts', $key );
+			}
+		}
+		return 'id name column_values(ids: ["' . implode( '", "', $ids ) . '"]) { id text value }';
 	}
 
 	/**
@@ -934,10 +1145,11 @@ class Registry {
 	 * @param array       $person   Clean person.
 	 * @param string|null $address  Mailing address, or null.
 	 * @param bool        $send     False for a +1 sharing the registrant's inbox.
+	 * @param string|null $known    All Contacts item ID already known (live call).
 	 * @return string|null All Contacts item ID.
 	 */
-	private static function confirm( $guest_id, array $person, $address, $send = true ) {
-		$contact_id = self::link_contact( $guest_id, $person, $address );
+	private static function confirm( $guest_id, array $person, $address, $send = true, $known = null ) {
+		$contact_id = self::link_contact( $guest_id, $person, $address, $known );
 
 		if ( $send && '' !== $person['email'] ) {
 			try {
@@ -1159,6 +1371,23 @@ class Registry {
 		}
 		if ( null !== $address && '' !== $address ) {
 			$values[ Config\column( 'guests', 'mailing_address' ) ] = array( 'text' => $address );
+		}
+		// Drives the dinner-week reminder automations; cleared on Cancelled.
+		if ( '' !== Config\column( 'guests', 'dinner_date' ) && '' !== Config\dinner_date() ) {
+			$values[ Config\column( 'guests', 'dinner_date' ) ] = array( 'date' => Config\dinner_date() );
+		}
+		return $values;
+	}
+
+	/**
+	 * Add a cleared Dinner date to a write, so no reminders go out.
+	 *
+	 * @param array $values Column values.
+	 * @return array
+	 */
+	private static function without_dinner_date( array $values ) {
+		if ( '' !== Config\column( 'guests', 'dinner_date' ) ) {
+			$values[ Config\column( 'guests', 'dinner_date' ) ] = null;
 		}
 		return $values;
 	}

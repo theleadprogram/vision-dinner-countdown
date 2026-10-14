@@ -64,6 +64,26 @@ add_action(
 			)
 		);
 
+		// Live-call registration: the details to prefill from a recruiting-board
+		// item's private Register link.
+		register_rest_route(
+			NS,
+			'/prospect',
+			array(
+				'methods'             => 'GET',
+				'permission_callback' => $public,
+				'callback'            => function ( \WP_REST_Request $request ) {
+					$token = (string) $request->get_param( 'r' );
+					return respond(
+						function () use ( $token ) {
+							limit( 'prospect', 60, HOUR_IN_SECONDS );
+							return Registry::prospect( $token );
+						}
+					);
+				},
+			)
+		);
+
 		register_rest_route(
 			NS,
 			'/resend-link',

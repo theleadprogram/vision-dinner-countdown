@@ -22,18 +22,20 @@ It follows the same pattern as the LEAD Learn forms (`theleadprogram/lead-monday
    - Put `[lead_vision_dinner]` in the existing **/dinner** page.
    - Create a child page with the slug **table** (so it's /dinner/table) containing `[lead_vision_dinner_table]`.
    - On both pages, hide the page title and pick the theme's full-width or blank template if it has one. The plugin runs full width either way, but the theme's title would otherwise sit above the photo.
-5. **Fill in Settings → Vision Dinner:** venue, Table Leader Coordinator, the four "What to expect" photos, and the times. Anything left blank shows plain wording ("Venue to be announced", "Call 1-866-LEADCMA."). The photo band stays hidden until all four photos are set.
+5. **Fill in Settings → Vision Dinner:** Table Leader Coordinator, the four "What to expect" photos, the times, and the venue's street address and directions link when you have them. The venue name and city come from the dinner file (The Woodland, Strongsville, OH) until you type your own. The photo band stays hidden until all four photos are set.
 6. **Check status** in Tools → Site Health → Info → LEAD Vision Dinner. It shows whether the token and boards were found and whether writes are allowed.
-7. **Create the Monday automations** below.
+7. **Make the live-call Register links:** Settings → Vision Dinner → **Make Register links for new prospects**. Click it again whenever you add people to the recruiting board.
+8. **Connect Gmail to the email automations** (once, see "Emails").
 
 ## Monday.com boards
 
-Both boards are in **Fundraising › Vision Dinner – March 2027**, next to the countdown board. Their IDs are recorded in `dinners/2027-03.json` under `monday.boards.guests` and `monday.boards.table_leaders`.
+Since version 1.5.0 the boards are in **All LEAD Contacts › Vision Dinner – March 2027**, next to All Contacts, the way LEAD - Africa sits. Their IDs are in `dinners/2027-03.json` under `monday.boards`. The earlier copies stay in **Fundraising › Vision Dinner – March 2027** as they were (Clint, Christina and Brigette's test registrations are there); the website no longer writes to them. The Countdown board stays in Fundraising.
 
 | Board | One item per | Notes |
 |---|---|---|
 | Vision Dinner Guests – March 2027 | person | Table Leaders, guests and spouses/+1s. A registrant and their +1 share a Party ID. |
 | Table Leaders – March 2027 | Table Leader household | Feeds the Table Leader search on the page. Linked two-way to Guests. |
+| Table Leader Recruiting – March 2027 | prospect | The 83 prospects, copied with their Stage. Work here from October 14, 2026. Each item has a private **Register link** for live-call registration. |
 
 Columns added beyond the handoff's list:
 
@@ -44,6 +46,8 @@ Columns added beyond the handoff's list:
 - **Table Leaders › Contact**: the registrant's All Contacts record.
 
 - **Guests › Confirmation** and **Table Leaders › Link email**: set to Send to trigger the emails (see "Emails").
+- **Guests › Dinner date**: the site sets it to the dinner date on every registration; it drives the dinner-week reminders. It's cleared when Status changes to Cancelled, so a released seat gets no reminders.
+- **Recruiting › Register link** and **Register token**: the private live-call link. Clear the token to turn a link off; the Settings button makes a new one.
 
 **Seats filled** is a Number column that the site recalculates after every change it makes. **Seats left** is a formula, 10 − Seats filled. The page itself always counts live from the Guests board, so a guest moved by hand in Monday shows correctly on the page right away. The Seats filled number in Monday catches up on the next registration for that table.
 
@@ -76,22 +80,33 @@ See `docs/vision-dinner-data-model-decisions.md` for the decisions behind this.
 
 ## Emails
 
-The site sends no email itself. It sets status columns that a Monday automation turns into email:
+The site sends no email itself. It sets columns that Monday automations on the new boards turn into email, sent from **clint@leadcma.org** through Gmail:
 
-- **Guests › Confirmation = Send** on every registration with an email, for guests, +1s and Table Leaders, and again after a Table Leader edits a guest.
-- **Table Leaders › Link email = Send** for "Lost your link?" and when a Table Leader registers again.
+| Board | When | Email |
+|---|---|---|
+| Guests | Confirmation changes to Send, Role isn't Table Leader | Guest confirmation, then Confirmation → Sent |
+| Guests | Confirmation changes to Send, Role is Table Leader | Table Leader confirmation with their private guest link, then → Sent |
+| Table Leaders | Link email changes to Send | "Your link to register guests" (Lost your link? and returning Table Leaders), then → Sent |
+| Guests | Dinner date: 5 days before at 1 pm, 3 days before at 7 pm, 1 day before at 11 am, the day of at 8 am and 4:20 pm (2 hours before doors) | Dinner-week reminders. Guests and Table Leaders get different versions; Table Leaders are asked to arrive at 5:30 pm to pray together. Eastern time. |
+| Guests | Status changes to Cancelled | Monday notification to Clint (seat released); Dinner date cleared |
 
-The site clears each column before setting Send, so the same trigger twice in a row still fires. **The automations that send these emails are not built yet**, so nothing sends until they are. The emails can be Monday Sequences on All Contacts (where Monday runs them), enrolled through the Guests item's Contact link, or plain "send an email" automations on the Guests and Table Leaders boards.
+The site clears each trigger column before setting Send, so the same trigger twice in a row still fires. A +1 who shares the registrant's email gets no second confirmation.
 
-Since version 1.4.0 the site writes neither **VD Email** nor **VD Guest Link** on All Contacts. Both can be removed after the three recruiting waves (see the decisions doc).
+**One-time step: connect Gmail.** Monday only lets the account owner attach a Gmail login to an automation, so 13 email automations (the 3 triggered ones and the 10 reminders) need it once: open each board's Automate menu, open each "Send email" automation, choose the clint@leadcma.org Gmail account, and save. Until then they fail with "gmailCredentials is required".
 
-The three draft sequences on All Contacts (Vision Dinner 2027 — Guest Confirmation, Table Leader Confirmation and Your Guest Link) are paused and hold the approved wording.
+The venue line reads "The Woodland, Strongsville, OH" in every email. Edit the wording in each automation once the street address is set.
 
-### Still to set up
+Since version 1.4.0 the site writes neither **VD Email** nor **VD Guest Link** on All Contacts. Both can be removed after the three recruiting waves (see the decisions doc). The three draft sequences on All Contacts (Vision Dinner 2027 — Guest Confirmation, Table Leader Confirmation and Your Guest Link) are paused and no longer used.
 
-- **The confirmation and link-email automations** (above).
-- **Seat released:** on the Guests board, when **Status** changes to **Cancelled**, notify the Table Leader Coordinator, once they're named.
-- **Dinner-week reminders** (Mon 1 pm, Wed 7 pm, day before 11 am, morning of 8 am, 2 hours before doors): the countdown task "Set up dinner email sequences in Monday".
+## Live-call registration
+
+When a prospect says yes on a call, open their item on **Table Leader Recruiting – March 2027** (All LEAD Contacts) and click **Register link**. leadcma.org/dinner opens as a Table Leader registration, filled in from their All Contacts record (or the recruiting item if it has no contact). Confirm each detail with them, add their address and spouse, and register.
+
+- The registration updates **that same contact**, found by the link, not by email, so a new email can't create a duplicate. The contact's email never changes; when the email given on the call differs, a note on their Guests item says so.
+- Their **Stage** changes to **Yes**, with a note on the recruiting item. **Registered by** is **Staff**.
+- If they're already a Table Leader, nothing changes and their private link is emailed to them, as on the public form.
+- The thank-you screen shows their private guest link, so you can read it to them.
+- Links are private: anyone with one can open that person's details. Clear the Register token to turn a link off.
 
 ## Next dinner
 
