@@ -119,7 +119,8 @@
         "name": "All Contacts",
         "id": 18293116953,
         "url": "https://the-lead-program.monday.com/boards/18293116953",
-        "group": "group_mm1tbjyd",
+        "group": "group_mkxcr7ee",
+        "group_note": "New contacts go straight into All LEAD Contacts. The Incoming Form Group (group_mm1tbjyd) runs the LEAD Learn intake automation, which replaces Contact Type with LEAD Community and sets Student Status.",
         "columns": {
           "email": "contact_email",
           "first_name": "text_mkx5348f",

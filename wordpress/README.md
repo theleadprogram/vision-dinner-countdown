@@ -55,7 +55,7 @@ See `docs/vision-dinner-data-model-decisions.md` for the decisions behind this.
 
 **Every registrant must give an email**: the registrant, a +1, and a guest a Table Leader adds. Each registrant gets an All Contacts record, matched by email, linked through the Guests board's **Contact** column. The Table Leaders item's **Contact** column links to the person who registered.
 
-- **No contact with that email:** one is created in "Incoming Form Group (do not delete)".
+- **No contact with that email:** one is created in **All LEAD Contacts**. Not in "Incoming Form Group (do not delete)": that group runs the LEAD Learn intake automation, which replaces Contact Type with LEAD Community, sets Student Status and adds a Student Journey item.
 - **Contact exists (same first name):** the registration is trusted as typed. Name, mobile, church and address (written to **Location** as one line) are written to the contact. Blank fields never erase data. **The email is never changed.**
 - **Shared email (a different first name already owns it):** this is a household sharing one inbox. The person gets their own Guests item, tied by Party ID, and is never merged with the email owner. They're added to the owner's **Spouse Name**, and their Guests item isn't linked to that contact; a note says why. A +1 who shares the registrant's email gets no second confirmation.
 - **Contact Type is written by label id, never by name.** The site adds **44, March 2027 Vision Dinner** (`contact_type_id` in the dinner file) and keeps every other current value. Retired labels (26) can't be written and drop off.
