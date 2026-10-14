@@ -166,7 +166,8 @@
 	function validateGuest(v) {
 		var errors = {};
 		if (!v.first) errors.first = 'Enter a first name.';
-		if (v.email && !L.EMAIL.test(v.email)) errors.email = 'Enter a valid email address.';
+		if (!v.email) errors.email = 'Enter their email. A couple can share one.';
+		else if (!L.EMAIL.test(v.email)) errors.email = 'Enter a valid email address.';
 		if (v.phone && L.phoneDigits(v.phone).length !== 10) errors.phone = 'Enter a 10-digit mobile number.';
 		return errors;
 	}

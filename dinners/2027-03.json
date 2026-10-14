@@ -107,7 +107,8 @@
           "guest_link": "link_mm80mana",
           "coordinator": "multiple_person_mm80f9zx",
           "first_name": "text_mm81sjpt",
-          "link_email": "color_mm80pnmw"
+          "link_email": "color_mm80pnmw",
+          "contact": "board_relation_mm848whq"
         }
       },
       "all_contacts": {
@@ -123,8 +124,8 @@
           "church": "text_mkx6dz3w",
           "contact_type": "dropdown_mkxdjrrb",
           "guests_link": "board_relation_mm81mj1p",
-          "guest_link": "link_mm813h7e",
-          "location": "text_mkx6jzke"
+          "location": "text_mkx6jzke",
+          "spouse_name": "text_mkx6vv08"
         },
         "sequences": {
           "guest_confirmation": "875508e2-7812-4ca1-912f-12d4ddfae369",
@@ -132,7 +133,8 @@
           "tl_link": "5a186ca9-a59b-4c07-bef0-44c097fc4675"
         },
         "contact_type_id": 44,
-        "contact_type_note": "Contact Type is written by label id. 44 = March 2027 Vision Dinner (added at registration). 46 = March 2027 Vision Donor and 14 = Donor are added when someone gives, not by the form. 26 (Vision Dinner Guest) is retired and must not be written."
+        "contact_type_note": "Contact Type is written by label id. 44 = March 2027 Vision Dinner (added at registration). 46 = March 2027 Vision Donor and 14 = Donor are added when someone gives, not by the form. 26 (Vision Dinner Guest) is retired and must not be written.",
+        "sequences_note": "These three sequences are inactive and will be retired (decision 4); the website no longer uses them."
       }
     }
   }

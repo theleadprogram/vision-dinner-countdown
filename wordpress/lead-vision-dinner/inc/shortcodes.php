@@ -261,7 +261,7 @@ function register_form() {
 					<?php
 					echo field( 'plus_first', 'Their first name', array( 'placeholder' => 'First name' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 					echo field( 'plus_last', 'Their last name', array( 'placeholder' => 'Last name' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
-					echo field( 'plus_email', 'Their email', array( 'placeholder' => 'So they get reminders too', 'type' => 'email', 'optional' => true ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+					echo field( 'plus_email', 'Their email', array( 'placeholder' => 'Can be the same as yours', 'type' => 'email' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 					echo field( 'plus_dietary', 'Their dietary needs', array( 'placeholder' => 'e.g. vegetarian', 'optional' => true ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 					?>
 				</div>
@@ -401,7 +401,7 @@ function table_page() {
 							echo field( 'access', 'Accessibility needs', array( 'placeholder' => 'e.g. wheelchair access', 'optional' => true ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 							?>
 						</div>
-						<div class="lvd-small">No email? Leave it blank and add a phone number. Your coordinator will make sure they get reminders.</div>
+						<div class="lvd-small">Every guest needs an email for their confirmation and reminders. A couple can share one.</div>
 						<div class="lvd-row">
 							<button type="submit" class="lvd-btn lvd-btn--primary lvd-btn--lg" data-submit>Add guest to my table</button>
 							<span class="lvd-note" data-added role="status" hidden></span>

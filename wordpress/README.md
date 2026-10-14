@@ -41,7 +41,7 @@ Columns added beyond the handoff's list:
 - **Guests › Contact**: the person's All Contacts record (see below).
 - **Guests › Guest link**: Table Leaders only.
 - **Table Leaders › Email, Mobile, Guest link token, Guest link**: the private link and where it goes.
-- **All Contacts › VD Guest Link**: a Table Leader's private link. (**VD Email** is no longer set; see "Emails".)
+- **Table Leaders › Contact**: the registrant's All Contacts record.
 
 - **Guests › Confirmation** and **Table Leaders › Link email**: set to Send to trigger the emails (see "Emails").
 
@@ -51,15 +51,17 @@ How a seat is counted: a seat is anyone connected to the Table Leader whose Stat
 
 ### All Contacts (the master record)
 
-Every registrant with an email gets an All Contacts record, matched by email, and is linked to it through the Guests board's **Contact** column. All Contacts shows the link back as "link to Vision Dinner Guests – March 2027". This covers people who register themselves, guests a Table Leader adds, and spouses or +1s.
+See `docs/vision-dinner-data-model-decisions.md` for the decisions behind this.
+
+**Every registrant must give an email**: the registrant, a +1, and a guest a Table Leader adds. Each registrant gets an All Contacts record, matched by email, linked through the Guests board's **Contact** column. The Table Leaders item's **Contact** column links to the person who registered.
 
 - **No contact with that email:** one is created in "Incoming Form Group (do not delete)".
-- **Contact exists:** the registration is trusted as typed. Name, mobile, church and address (written to **Location** as one line) are written to the contact. Blank form fields never erase what's there. **The email is never changed**, since it's the match key.
-- **Contact Type is written by label id, never by name.** The site adds **44, March 2027 Vision Dinner** (`contact_type_id` in the dinner file) and keeps every other current value. Monday replaces a dropdown on every write, so the site reads the contact's ids first and writes them all back. Retired labels, such as 26 Vision Dinner Guest, can't be written, so they drop off.
-- **46 March 2027 Vision Donor and 14 Donor** are added when someone gives, never by the form.
-- **Student Status, Marketing Status and every other column are never touched.**
-- **People without an email** aren't linked, to avoid duplicate contacts. The coordinator links them by hand.
-- **If anything fails,** the registration still goes through, and a note on the Guests item says what Monday reported, so nothing fails silently.
+- **Contact exists (same first name):** the registration is trusted as typed. Name, mobile, church and address (written to **Location** as one line) are written to the contact. Blank fields never erase data. **The email is never changed.**
+- **Shared email (a different first name already owns it):** this is a household sharing one inbox. The person gets their own Guests item, tied by Party ID, and is never merged with the email owner. They're added to the owner's **Spouse Name**, and their Guests item isn't linked to that contact; a note says why. A +1 who shares the registrant's email gets no second confirmation.
+- **Contact Type is written by label id, never by name.** The site adds **44, March 2027 Vision Dinner** (`contact_type_id` in the dinner file) and keeps every other current value. Retired labels (26) can't be written and drop off.
+- **46 March 2027 Vision Donor and 14 Donor** come from the gift step, never the form.
+- **Student Status, Marketing Status, VD Email, VD Guest Link and the recruiting columns are never written.**
+- **If anything fails,** the registration still goes through, and a note on the Guests item says what Monday reported.
 
 ### Rules the site follows
 
@@ -80,7 +82,7 @@ The site sends no email itself. It sets status columns that a Monday automation 
 
 The site clears each column before setting Send, so the same trigger twice in a row still fires. **The automations that send these emails are not built yet**, so nothing sends until they are. The emails can be Monday Sequences on All Contacts (where Monday runs them), enrolled through the Guests item's Contact link, or plain "send an email" automations on the Guests and Table Leaders boards.
 
-Since version 1.3.0 the site no longer sets **VD Email** on All Contacts. VD Email and VD Guest Link stay on All Contacts for now; don't remove them yet. The site still copies a Table Leader's private link to VD Guest Link.
+Since version 1.4.0 the site writes neither **VD Email** nor **VD Guest Link** on All Contacts. Both can be removed after the three recruiting waves (see the decisions doc).
 
 The three draft sequences on All Contacts (Vision Dinner 2027 — Guest Confirmation, Table Leader Confirmation and Your Guest Link) are paused and hold the approved wording.
 

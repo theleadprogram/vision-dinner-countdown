@@ -154,6 +154,9 @@ class Registry {
 		$errors = array();
 		$person = self::clean_person( $in, '', true, $errors );
 		$plus   = ! empty( $in['plus_one'] ) ? self::clean_person( $in, 'plus_', false, $errors ) : null;
+		if ( $plus && '' === $plus['email'] && ! isset( $errors['plus_email'] ) ) {
+			$errors['plus_email'] = 'Enter their email. It can be the same as yours.';
+		}
 
 		$address = self::clean_address( $in );
 		$leader  = null;
@@ -189,7 +192,7 @@ class Registry {
 	private static function register_guest( array $person, $plus, $address, $leader, $interest ) {
 		$g         = Config\board( 'guests' );
 		$leader_id = $leader ? $leader['id'] : null;
-		$existing  = self::find_guest( 'email', $person['email'] );
+		$existing  = self::find_guest_for( $person['email'], $person['first'] );
 		$party     = $existing && '' !== $existing['party'] ? $existing['party'] : self::party_id();
 		$before    = $existing ? $existing['leader_ids'] : array();
 
@@ -211,7 +214,7 @@ class Registry {
 		self::confirm( $guest_id, $person, $address );
 
 		if ( $plus ) {
-			self::save_plus_one( $plus, $party, $address, $leader_id, $leader_id ? 'Assigned' : 'Needs a seat', 'Self' );
+			self::save_plus_one( $plus, $person, $party, $address, $leader_id, $leader_id ? 'Assigned' : 'Needs a seat', 'Self' );
 		}
 
 		self::recount( array_unique( array_filter( array_merge( $before, array( $leader_id ) ) ) ) );
@@ -262,7 +265,7 @@ class Registry {
 			)
 		);
 
-		$guest    = self::find_guest( 'email', $person['email'] );
+		$guest    = self::find_guest_for( $person['email'], $person['first'] );
 		$party    = $guest && '' !== $guest['party'] ? $guest['party'] : self::party_id();
 		$guest_id = self::save_guest(
 			$guest,
@@ -277,10 +280,13 @@ class Registry {
 				Config\column( 'guests', 'guest_link' )    => Monday::link( self::table_url( $token ), 'Register my guests' ),
 			)
 		);
-		self::confirm( $guest_id, $person, $address, self::table_url( $token ) );
+		$contact_id = self::confirm( $guest_id, $person, $address );
+		if ( $contact_id && '' !== Config\column( 'table_leaders', 'contact' ) ) {
+			Monday::update_item( $tl, $leader_id, array( Config\column( 'table_leaders', 'contact' ) => Monday::relation( $contact_id ) ) );
+		}
 
 		if ( $plus ) {
-			self::save_plus_one( $plus, $party, $address, $leader_id, 'Assigned', 'Self' );
+			self::save_plus_one( $plus, $person, $party, $address, $leader_id, 'Assigned', 'Self' );
 		}
 
 		self::recount( array( $leader_id ) );
@@ -296,18 +302,22 @@ class Registry {
 	/**
 	 * Save a spouse/+1: update the one already in this party, or create one.
 	 *
+	 * When the +1 shares the registrant's email, they are one household: the
+	 * +1 gets their own Guests item (matched by Party ID, never by email, so
+	 * neither overwrites the other), is recorded as Spouse Name on the email
+	 * owner's contact, and no second confirmation goes to the shared inbox.
+	 *
 	 * @param array       $plus      Clean person.
+	 * @param array       $primary   Clean registrant.
 	 * @param string      $party     Party ID.
 	 * @param string      $address   Mailing address.
 	 * @param string|null $leader_id Table Leader item ID.
 	 * @param string      $seating   Seating label.
 	 * @param string      $source    Registered by label.
 	 */
-	private static function save_plus_one( array $plus, $party, $address, $leader_id, $seating, $source ) {
-		$existing = null;
-		if ( '' !== $plus['email'] ) {
-			$existing = self::find_guest( 'email', $plus['email'] );
-		}
+	private static function save_plus_one( array $plus, array $primary, $party, $address, $leader_id, $seating, $source ) {
+		$shared   = 0 === strcasecmp( $plus['email'], $primary['email'] );
+		$existing = $shared ? null : self::find_guest_for( $plus['email'], $plus['first'] );
 		if ( ! $existing ) {
 			foreach ( self::find_guests( 'party_id', $party ) as $member ) {
 				if ( 'Spouse/+1' === $member['role'] ) {
@@ -327,7 +337,7 @@ class Registry {
 		);
 
 		$id = self::save_guest( $existing, $plus, $values );
-		self::confirm( $id, $plus, $address );
+		self::confirm( $id, $plus, $address, ! $shared );
 	}
 
 	/* ---------------------------------------------------------------------
@@ -380,11 +390,12 @@ class Registry {
 		$leader = self::leader_by_token( $token );
 		$errors = array();
 		$person = self::clean_person( $in, '', false, $errors );
+		self::require_email( $person, $errors );
 		if ( $errors ) {
 			throw new Validation_Exception( $errors );
 		}
 
-		$existing = '' !== $person['email'] ? self::find_guest( 'email', $person['email'] ) : null;
+		$existing = self::find_guest_for( $person['email'], $person['first'] );
 		$before   = $existing ? $existing['leader_ids'] : array();
 		$values   = self::person_values( $person, null ) + array(
 			Config\column( 'guests', 'status' )        => Monday::status( 'Registered' ),
@@ -420,6 +431,7 @@ class Registry {
 		$guest  = self::guest_at( $leader, $guest_id );
 		$errors = array();
 		$person = self::clean_person( $in, '', false, $errors );
+		self::require_email( $person, $errors );
 		if ( $errors ) {
 			throw new Validation_Exception( $errors );
 		}
@@ -768,6 +780,11 @@ class Registry {
 		}
 
 		try {
+			$contact = self::find_contact( $person['email'] );
+			if ( $contact && ! self::same_person( Monday::text( $contact, Config\column( 'all_contacts', 'first_name' ) ), $person['first'] ) ) {
+				self::record_shared_email( $guest_id, $contact, $person );
+				return null;
+			}
 			$contact_id = self::find_or_create_contact( $person, $address );
 			Monday::update_item( Config\board( 'guests' ), $guest_id, array( Config\column( 'guests', 'contact' ) => Monday::relation( $contact_id ) ) );
 			return $contact_id;
@@ -889,8 +906,8 @@ class Registry {
 			return null;
 		}
 		$email_col = Config\column( 'all_contacts', 'email' );
-		$fields    = '"' . $email_col . '", "' . Config\column( 'all_contacts', 'contact_type' ) . '"';
-		foreach ( Monday::find_by( Config\board( 'all_contacts' ), $email_col, $email, 'id column_values(ids: [' . $fields . ']) { id text value }' ) as $item ) {
+		$fields    = '"' . $email_col . '", "' . Config\column( 'all_contacts', 'contact_type' ) . '", "' . Config\column( 'all_contacts', 'first_name' ) . '", "' . Config\column( 'all_contacts', 'spouse_name' ) . '"';
+		foreach ( Monday::find_by( Config\board( 'all_contacts' ), $email_col, $email, 'id name column_values(ids: [' . $fields . ']) { id text value }' ) as $item ) {
 			if ( 0 === strcasecmp( Monday::text( $item, $email_col ), $email ) ) {
 				return $item;
 			}
@@ -899,32 +916,106 @@ class Registry {
 	}
 
 	/**
-	 * Link a Guests item to its contact (with the Table Leader's private link
-	 * copied to VD Guest Link) and set Confirmation to Send so the Monday
-	 * automation emails the confirmation.
+	 * Link a Guests item to its contact and set Confirmation to Send so the
+	 * Monday automation emails the confirmation.
 	 *
 	 * @param string      $guest_id Guests item ID.
 	 * @param array       $person   Clean person.
 	 * @param string|null $address  Mailing address, or null.
-	 * @param string|null $link     Table Leader's private link.
+	 * @param bool        $send     False for a +1 sharing the registrant's inbox.
+	 * @return string|null All Contacts item ID.
 	 */
-	private static function confirm( $guest_id, array $person, $address, $link = null ) {
+	private static function confirm( $guest_id, array $person, $address, $send = true ) {
 		$contact_id = self::link_contact( $guest_id, $person, $address );
 
-		try {
-			if ( $contact_id && $link && '' !== Config\column( 'all_contacts', 'guest_link' ) ) {
-				Monday::update_item( Config\board( 'all_contacts' ), $contact_id, array( Config\column( 'all_contacts', 'guest_link' ) => Monday::link( $link, 'Register my guests' ) ) );
-			}
-			if ( '' !== $person['email'] ) {
-				self::trigger( Config\board( 'guests' ), $guest_id, Config\column( 'guests', 'confirmation' ) );
-			}
-		} catch ( Monday_Exception $e ) {
-			error_log( '[lead-vision-dinner] Confirmation trigger failed for guest ' . $guest_id . ': ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		if ( $send && '' !== $person['email'] ) {
 			try {
-				Monday::add_update( $guest_id, 'The website could not set Confirmation to Send. Please send the confirmation by hand. Monday said: ' . mb_substr( $e->getMessage(), 0, 400 ) );
-			} catch ( Monday_Exception $ignored ) {
-				// Already logged.
+				self::trigger( Config\board( 'guests' ), $guest_id, Config\column( 'guests', 'confirmation' ) );
+			} catch ( Monday_Exception $e ) {
+				error_log( '[lead-vision-dinner] Confirmation trigger failed for guest ' . $guest_id . ': ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+				try {
+					Monday::add_update( $guest_id, 'The website could not set Confirmation to Send. Please send the confirmation by hand. Monday said: ' . mb_substr( $e->getMessage(), 0, 400 ) );
+				} catch ( Monday_Exception $ignored ) {
+					// Already logged.
+				}
 			}
+		}
+
+		return $contact_id;
+	}
+
+	/**
+	 * Someone registered with an email that belongs to a contact with a
+	 * different first name (a couple sharing one inbox). Don't overwrite
+	 * that contact or link to it: record this person as its Spouse Name and
+	 * leave a note on the Guests item.
+	 *
+	 * @param string $guest_id Guests item ID.
+	 * @param array  $contact  All Contacts item (from find_contact).
+	 * @param array  $person   Clean person.
+	 * @throws Monday_Exception On failure.
+	 */
+	private static function record_shared_email( $guest_id, array $contact, array $person ) {
+		$name   = trim( $person['first'] . ' ' . $person['last'] );
+		$column = Config\column( 'all_contacts', 'spouse_name' );
+		if ( '' !== $column && '' !== $name ) {
+			$current = Monday::text( $contact, $column );
+			if ( '' === $current ) {
+				Monday::update_item( Config\board( 'all_contacts' ), $contact['id'], array( $column => $name ) );
+			} elseif ( false === stripos( $current, $name ) ) {
+				Monday::update_item( Config\board( 'all_contacts' ), $contact['id'], array( $column => $current . '; ' . $name ) );
+			}
+		}
+		Monday::add_update(
+			$guest_id,
+			'Shares the email ' . $person['email'] . ' with ' . $contact['name'] . ' in All Contacts, so they are recorded there as Spouse Name and not linked to that contact.'
+		);
+	}
+
+	/**
+	 * Whether two first names are the same person's. A blank name can't tell
+	 * them apart, so it counts as the same.
+	 *
+	 * @param string $a First name.
+	 * @param string $b First name.
+	 * @return bool
+	 */
+	private static function same_person( $a, $b ) {
+		$first = function ( $name ) {
+			$parts = preg_split( '/\s+/', strtolower( trim( (string) $name ) ) );
+			return $parts ? $parts[0] : '';
+		};
+		$a = $first( $a );
+		$b = $first( $b );
+		return '' === $a || '' === $b || $a === $b;
+	}
+
+	/**
+	 * The Guests item with this email, but only when it's the same person
+	 * (first name matches); a spouse sharing the inbox gets their own item.
+	 *
+	 * @param string $email Email.
+	 * @param string $first First name.
+	 * @return array|null
+	 */
+	private static function find_guest_for( $email, $first ) {
+		foreach ( self::find_guests( 'email', $email ) as $guest ) {
+			if ( self::same_person( $guest['first'], $first ) ) {
+				return $guest;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Every guest needs an email (it can be shared with a spouse).
+	 *
+	 * @param array $person Clean person.
+	 * @param array $errors Errors (by reference).
+	 */
+	private static function require_email( array $person, array &$errors ) {
+		if ( '' === $person['email'] && ! isset( $errors['email'] ) ) {
+			$errors['email'] = 'Enter their email. A couple can share one.';
 		}
 	}
 
