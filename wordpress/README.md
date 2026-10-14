@@ -60,7 +60,8 @@ See `docs/vision-dinner-data-model-decisions.md` for the decisions behind this.
 - **Shared email (a different first name already owns it):** this is a household sharing one inbox. The person gets their own Guests item, tied by Party ID, and is never merged with the email owner. They're added to the owner's **Spouse Name**, and their Guests item isn't linked to that contact; a note says why. A +1 who shares the registrant's email gets no second confirmation.
 - **Contact Type is written by label id, never by name.** The site adds **44, March 2027 Vision Dinner** (`contact_type_id` in the dinner file) and keeps every other current value. Retired labels (26) can't be written and drop off.
 - **46 March 2027 Vision Donor and 14 Donor** come from the gift step, never the form.
-- **Student Status, Marketing Status, VD Email, VD Guest Link and the recruiting columns are never written.**
+- **Marketing Status** is set to **Marketing contact** on new contacts, and on existing contacts only when it's blank. Unsubscribed and Not marketing contact are never overwritten.
+- **Student Status, VD Email, VD Guest Link and the recruiting columns are never written.**
 - **If anything fails,** the registration still goes through, and a note on the Guests item says what Monday reported.
 
 ### Rules the site follows

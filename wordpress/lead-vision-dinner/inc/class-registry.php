@@ -815,6 +815,10 @@ class Registry {
 		};
 		$type_id = isset( $board['contact_type_id'] ) ? (int) $board['contact_type_id'] : 0;
 		$name    = trim( $person['first'] . ' ' . $person['last'] );
+		// Marketing contact, unless the contact already has a Marketing Status
+		// (Unsubscribed and Not marketing contact must never be overwritten).
+		$mkt_col = $col( 'marketing_status' );
+		$mkt     = '' !== $mkt_col && isset( $board['marketing_status_index'] ) ? array( 'index' => (int) $board['marketing_status_index'] ) : null;
 
 		// What the registration says about this person. Blank values are
 		// never written, so an empty form field can't wipe a contact's data.
@@ -853,6 +857,9 @@ class Registry {
 					$values[ $col( 'contact_type' ) ] = array( 'ids' => $keep );
 				}
 			}
+			if ( $mkt && '' === Monday::text( $contact, $mkt_col ) ) {
+				$values[ $mkt_col ] = $mkt;
+			}
 			Monday::update_item( $board, $contact['id'], $values );
 			return (string) $contact['id'];
 		}
@@ -861,6 +868,9 @@ class Registry {
 		$values[ $col( 'email' ) ] = Monday::email( $person['email'] );
 		if ( $type_id ) {
 			$values[ $col( 'contact_type' ) ] = array( 'ids' => array( $type_id ) );
+		}
+		if ( $mkt ) {
+			$values[ $mkt_col ] = $mkt;
 		}
 		return Monday::create_item( $board, '' !== $name ? $name : $person['email'], $values );
 	}
@@ -906,7 +916,8 @@ class Registry {
 			return null;
 		}
 		$email_col = Config\column( 'all_contacts', 'email' );
-		$fields    = '"' . $email_col . '", "' . Config\column( 'all_contacts', 'contact_type' ) . '", "' . Config\column( 'all_contacts', 'first_name' ) . '", "' . Config\column( 'all_contacts', 'spouse_name' ) . '"';
+		$ids       = array_filter( array( $email_col, Config\column( 'all_contacts', 'contact_type' ), Config\column( 'all_contacts', 'first_name' ), Config\column( 'all_contacts', 'spouse_name' ), Config\column( 'all_contacts', 'marketing_status' ) ) );
+		$fields    = '"' . implode( '", "', $ids ) . '"';
 		foreach ( Monday::find_by( Config\board( 'all_contacts' ), $email_col, $email, 'id name column_values(ids: [' . $fields . ']) { id text value }' ) as $item ) {
 			if ( 0 === strcasecmp( Monday::text( $item, $email_col ), $email ) ) {
 				return $item;
