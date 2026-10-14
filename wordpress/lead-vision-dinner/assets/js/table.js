@@ -18,6 +18,7 @@
 	var state = { table: null, editing: null };
 
 	L.bindPhone(page);
+	L.bindEmailHints(page);
 	L.bindErrorClearing(addForm);
 
 	/* ---------- Load ---------- */

@@ -25,6 +25,7 @@
 	};
 
 	L.bindPhone(form);
+	L.bindEmailHints(form);
 	L.bindErrorClearing(form);
 
 	/* ---------- Role switch ---------- */

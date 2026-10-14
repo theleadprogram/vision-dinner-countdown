@@ -208,7 +208,7 @@ class Registry {
 		}
 
 		$guest_id = self::save_guest( $existing, $person, $values );
-		self::confirm( $guest_id, $person, 'Guest confirmation' );
+		self::confirm( $guest_id, $person, $address );
 
 		if ( $plus ) {
 			self::save_plus_one( $plus, $party, $address, $leader_id, $leader_id ? 'Assigned' : 'Needs a seat', 'Self' );
@@ -277,7 +277,7 @@ class Registry {
 				Config\column( 'guests', 'guest_link' )    => Monday::link( self::table_url( $token ), 'Register my guests' ),
 			)
 		);
-		self::confirm( $guest_id, $person, 'TL confirmation', self::table_url( $token ) );
+		self::confirm( $guest_id, $person, $address, self::table_url( $token ) );
 
 		if ( $plus ) {
 			self::save_plus_one( $plus, $party, $address, $leader_id, 'Assigned', 'Self' );
@@ -327,7 +327,7 @@ class Registry {
 		);
 
 		$id = self::save_guest( $existing, $plus, $values );
-		self::confirm( $id, $plus, 'Guest confirmation' );
+		self::confirm( $id, $plus, $address );
 	}
 
 	/* ---------------------------------------------------------------------
@@ -398,7 +398,7 @@ class Registry {
 		}
 
 		$id = self::save_guest( $existing, $person, $values );
-		self::confirm( $id, $person, 'Guest confirmation' );
+		self::confirm( $id, $person, null );
 		if ( $existing ) {
 			Monday::add_update( $id, 'Added to ' . $leader['name'] . "'s table from their private guest link." );
 		}
@@ -436,7 +436,7 @@ class Registry {
 				Config\column( 'guests', 'accessibility' ) => $person['access'],
 			)
 		);
-		self::confirm( $guest['id'], $person, 'Guest confirmation' );
+		self::confirm( $guest['id'], $person, null );
 
 		return self::table( $token );
 	}
@@ -485,16 +485,13 @@ class Registry {
 
 	/**
 	 * Email a Table Leader their private link (issuing one if they have
-	 * none): the link is copied to their All Contacts record and VD Email is
-	 * set to "TL link", which enrolls them in the guest-link sequence.
+	 * none) by setting Link email to Send on their Table Leaders item.
 	 *
 	 * @param array      $leader id, email, token.
-	 * @param array|null $person The form's person (returning Table Leader), or
-	 *                           null for "Lost your link?".
+	 * @param array|null $person Unused; kept so both callers read the same.
 	 */
 	private static function send_link( array $leader, $person ) {
-		$token = $leader['token'];
-		if ( '' === $token ) {
+		if ( '' === $leader['token'] ) {
 			$token = self::token();
 			Monday::update_item(
 				Config\board( 'table_leaders' ),
@@ -506,22 +503,7 @@ class Registry {
 			);
 		}
 
-		$contact_id = null;
-		try {
-			$contact_id = $person
-				? self::find_or_create_contact( $person )
-				: self::find_contact_id( $leader['email'] );
-			if ( $contact_id ) {
-				self::send_contact_email( $contact_id, 'TL link', self::table_url( $token ) );
-			}
-		} catch ( Monday_Exception $e ) {
-			error_log( '[lead-vision-dinner] Guest link email failed for Table Leader ' . $leader['id'] . ': ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-			$contact_id = null;
-		}
-
-		if ( ! $contact_id ) {
-			Monday::add_update( $leader['id'], 'Their guest link was requested, but the website could not email it (no matching All Contacts record). Please send it by hand.' );
-		}
+		self::trigger( Config\board( 'table_leaders' ), $leader['id'], Config\column( 'table_leaders', 'link_email' ) );
 	}
 
 	/* ---------------------------------------------------------------------
@@ -764,33 +746,35 @@ class Registry {
 
 	/**
 	 * Connect a Guests item to the person's All Contacts record (the master
-	 * record), matched by email, and tag it with the dinner's Contact Type.
+	 * record), matched by email; create the contact when there is none.
 	 *
-	 * An existing contact keeps everything it has: the Contact Type label is
-	 * added alongside its other types, and only blank name, mobile and church
-	 * fields are filled. Student Status is never touched, because it drives
-	 * the student automations. People without an email are not linked, to
-	 * avoid duplicate contacts; the coordinator can link them by hand.
+	 * Registration data is trusted as typed: name, mobile, church and
+	 * address are written to the contact. The email is the match key and is
+	 * never changed. Contact Type gains the dinner's label (by id) and keeps
+	 * every other active value. Student Status and other columns are never
+	 * touched. People without an email are not linked.
 	 *
-	 * A failure here never fails the registration; it leaves a note on the
-	 * Guests item instead.
+	 * A failure never fails the registration; it leaves a note on the
+	 * Guests item, with Monday's message, so nothing fails silently.
 	 *
-	 * @param string $guest_id Guests item ID.
-	 * @param array  $person   Clean person.
+	 * @param string      $guest_id Guests item ID.
+	 * @param array       $person   Clean person.
+	 * @param string|null $address  Mailing address, or null when not collected.
+	 * @return string|null All Contacts item ID.
 	 */
-	private static function link_contact( $guest_id, array $person ) {
+	private static function link_contact( $guest_id, array $person, $address ) {
 		if ( ! Config\board( 'all_contacts' ) || '' === $person['email'] || '' === Config\column( 'guests', 'contact' ) ) {
 			return null;
 		}
 
 		try {
-			$contact_id = self::find_or_create_contact( $person );
+			$contact_id = self::find_or_create_contact( $person, $address );
 			Monday::update_item( Config\board( 'guests' ), $guest_id, array( Config\column( 'guests', 'contact' ) => Monday::relation( $contact_id ) ) );
 			return $contact_id;
 		} catch ( Monday_Exception $e ) {
 			error_log( '[lead-vision-dinner] All Contacts link failed for guest ' . $guest_id . ': ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			try {
-				Monday::add_update( $guest_id, 'The website could not link this guest to All Contacts or send their confirmation. Please link them by hand and send it.' );
+				Monday::add_update( $guest_id, 'The website could not link this guest to All Contacts. Please link them by hand. Monday said: ' . mb_substr( $e->getMessage(), 0, 400 ) );
 			} catch ( Monday_Exception $ignored ) {
 				// Already logged; the registration itself succeeded.
 			}
@@ -800,57 +784,98 @@ class Registry {
 
 	/**
 	 * The All Contacts item for this person: the existing one (matched by
-	 * email, gaining the Contact Type label and any blank fields) or a new one.
+	 * email) updated with the registration's details, or a new one.
 	 *
-	 * @param array $person Clean person with an email.
+	 * @param array       $person  Clean person with an email.
+	 * @param string|null $address Mailing address, or null.
 	 * @return string Item ID.
 	 * @throws Monday_Exception On failure.
 	 */
-	private static function find_or_create_contact( array $person ) {
-		$board = Config\board( 'all_contacts' );
-		$col   = function ( $key ) {
+	private static function find_or_create_contact( array $person, $address ) {
+		$board   = Config\board( 'all_contacts' );
+		$col     = function ( $key ) {
 			return Config\column( 'all_contacts', $key );
 		};
-		$label = isset( $board['contact_type_label'] ) ? (string) $board['contact_type_label'] : 'Vision Dinner Guest';
-		$phone = '' !== $person['phone'] ? self::format_phone( $person['phone'] ) : '';
+		$type_id = isset( $board['contact_type_id'] ) ? (int) $board['contact_type_id'] : 0;
+		$name    = trim( $person['first'] . ' ' . $person['last'] );
+
+		// What the registration says about this person. Blank values are
+		// never written, so an empty form field can't wipe a contact's data.
+		$details = array(
+			$col( 'first_name' ) => $person['first'],
+			$col( 'last_name' )  => $person['last'],
+			$col( 'mobile' )     => '' !== $person['phone'] ? self::format_phone( $person['phone'] ) : '',
+			$col( 'church' )     => $person['church'],
+		);
+		if ( '' !== $col( 'location' ) && null !== $address ) {
+			$details[ $col( 'location' ) ] = trim( preg_replace( '/\s*\n\s*/', ', ', (string) $address ), ', ' );
+		}
+		$details = array_filter(
+			$details,
+			function ( $v ) {
+				return '' !== $v;
+			}
+		);
+		unset( $details[''] );
 
 		$contact = self::find_contact( $person['email'] );
 
 		if ( $contact ) {
-			$types  = array_values( array_filter( array_map( 'trim', explode( ',', Monday::text( $contact, $col( 'contact_type' ) ) ) ) ) );
-			$values = array();
-			if ( ! in_array( $label, $types, true ) ) {
-				$types[]                         = $label;
-				$values[ $col( 'contact_type' ) ] = array( 'labels' => $types );
+			$values = $details;
+			if ( '' !== $name ) {
+				$values['name'] = $name;
 			}
-			foreach ( array(
-				'first_name' => $person['first'],
-				'last_name'  => $person['last'],
-				'mobile'     => $phone,
-				'church'     => $person['church'],
-			) as $key => $value ) {
-				if ( '' !== $value && '' === Monday::text( $contact, $col( $key ) ) ) {
-					$values[ $col( $key ) ] = $value;
+			if ( $type_id ) {
+				$ids = Monday::dropdown_ids( $contact, $col( 'contact_type' ) );
+				if ( ! in_array( $type_id, $ids, true ) ) {
+					// Writing a dropdown replaces it, so send every current
+					// value back with ours added. Retired (deactivated) labels
+					// can't be written and are left off.
+					$keep                            = array_values( array_intersect( $ids, self::active_contact_type_ids() ) );
+					$keep[]                          = $type_id;
+					$values[ $col( 'contact_type' ) ] = array( 'ids' => $keep );
 				}
 			}
 			Monday::update_item( $board, $contact['id'], $values );
 			return (string) $contact['id'];
 		}
 
-		$values = array_filter(
-			array(
-				$col( 'first_name' )   => $person['first'],
-				$col( 'last_name' )    => $person['last'],
-				$col( 'email' )        => Monday::email( $person['email'] ),
-				$col( 'mobile' )       => $phone,
-				$col( 'church' )       => $person['church'],
-				$col( 'contact_type' ) => array( 'labels' => array( $label ) ),
-			),
-			function ( $v ) {
-				return '' !== $v;
+		$values                   = $details;
+		$values[ $col( 'email' ) ] = Monday::email( $person['email'] );
+		if ( $type_id ) {
+			$values[ $col( 'contact_type' ) ] = array( 'ids' => array( $type_id ) );
+		}
+		return Monday::create_item( $board, '' !== $name ? $name : $person['email'], $values );
+	}
+
+	/**
+	 * Contact Type label ids that are not deactivated (cached per request).
+	 *
+	 * @return int[]
+	 * @throws Monday_Exception On failure.
+	 */
+	private static function active_contact_type_ids() {
+		static $ids = null;
+		if ( null === $ids ) {
+			$data     = Monday::call(
+				'query ($board: [ID!], $col: [String!]) { boards(ids: $board) { columns(ids: $col) { settings_str } } }',
+				array(
+					'board' => array( (string) Config\board( 'all_contacts' )['id'] ),
+					'col'   => array( Config\column( 'all_contacts', 'contact_type' ) ),
+				)
+			);
+			$settings = isset( $data['boards'][0]['columns'][0]['settings_str'] ) ? json_decode( (string) $data['boards'][0]['columns'][0]['settings_str'], true ) : array();
+			// Retired labels are listed in deactivated_labels (and, in some
+			// API versions, flagged is_deactivated on the label itself).
+			$retired = isset( $settings['deactivated_labels'] ) ? array_map( 'intval', (array) $settings['deactivated_labels'] ) : array();
+			$ids     = array();
+			foreach ( isset( $settings['labels'] ) ? $settings['labels'] : array() as $label ) {
+				if ( isset( $label['id'] ) && empty( $label['is_deactivated'] ) && ! in_array( (int) $label['id'], $retired, true ) ) {
+					$ids[] = (int) $label['id'];
+				}
 			}
-		);
-		return Monday::create_item( $board, $person['first'] . ' ' . $person['last'], $values );
+		}
+		return $ids;
 	}
 
 	/**
@@ -863,12 +888,9 @@ class Registry {
 		if ( '' === $email || ! Config\board( 'all_contacts' ) ) {
 			return null;
 		}
-		$fields = array();
-		foreach ( array( 'email', 'first_name', 'last_name', 'mobile', 'church', 'contact_type' ) as $key ) {
-			$fields[] = '"' . Config\column( 'all_contacts', $key ) . '"';
-		}
 		$email_col = Config\column( 'all_contacts', 'email' );
-		foreach ( Monday::find_by( Config\board( 'all_contacts' ), $email_col, $email, 'id column_values(ids: [' . implode( ', ', $fields ) . ']) { id text }' ) as $item ) {
+		$fields    = '"' . $email_col . '", "' . Config\column( 'all_contacts', 'contact_type' ) . '"';
+		foreach ( Monday::find_by( Config\board( 'all_contacts' ), $email_col, $email, 'id column_values(ids: [' . $fields . ']) { id text value }' ) as $item ) {
 			if ( 0 === strcasecmp( Monday::text( $item, $email_col ), $email ) ) {
 				return $item;
 			}
@@ -877,55 +899,49 @@ class Registry {
 	}
 
 	/**
-	 * @param string $email Email.
-	 * @return string|null All Contacts item ID.
-	 */
-	private static function find_contact_id( $email ) {
-		$contact = self::find_contact( $email );
-		return $contact ? (string) $contact['id'] : null;
-	}
-
-	/**
-	 * Link a Guests item to its contact and send the matching email.
+	 * Link a Guests item to its contact (with the Table Leader's private link
+	 * copied to VD Guest Link) and set Confirmation to Send so the Monday
+	 * automation emails the confirmation.
 	 *
 	 * @param string      $guest_id Guests item ID.
 	 * @param array       $person   Clean person.
-	 * @param string      $label    VD Email label: "Guest confirmation" or "TL confirmation".
-	 * @param string|null $link     Table Leader's private link, for the TL email.
+	 * @param string|null $address  Mailing address, or null.
+	 * @param string|null $link     Table Leader's private link.
 	 */
-	private static function confirm( $guest_id, array $person, $label, $link = null ) {
-		$contact_id = self::link_contact( $guest_id, $person );
-		if ( ! $contact_id ) {
-			return;
-		}
+	private static function confirm( $guest_id, array $person, $address, $link = null ) {
+		$contact_id = self::link_contact( $guest_id, $person, $address );
+
 		try {
-			self::send_contact_email( $contact_id, $label, $link );
+			if ( $contact_id && $link && '' !== Config\column( 'all_contacts', 'guest_link' ) ) {
+				Monday::update_item( Config\board( 'all_contacts' ), $contact_id, array( Config\column( 'all_contacts', 'guest_link' ) => Monday::link( $link, 'Register my guests' ) ) );
+			}
+			if ( '' !== $person['email'] ) {
+				self::trigger( Config\board( 'guests' ), $guest_id, Config\column( 'guests', 'confirmation' ) );
+			}
 		} catch ( Monday_Exception $e ) {
-			error_log( '[lead-vision-dinner] Confirmation email trigger failed for guest ' . $guest_id . ': ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			error_log( '[lead-vision-dinner] Confirmation trigger failed for guest ' . $guest_id . ': ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			try {
+				Monday::add_update( $guest_id, 'The website could not set Confirmation to Send. Please send the confirmation by hand. Monday said: ' . mb_substr( $e->getMessage(), 0, 400 ) );
+			} catch ( Monday_Exception $ignored ) {
+				// Already logged.
+			}
 		}
 	}
 
 	/**
-	 * Set VD Email on an All Contacts item (and VD Guest Link when given).
-	 * Monday automations enroll the contact in the matching Vision Dinner
-	 * sequence and set VD Email to Sent. Clearing it first means the
-	 * automation fires even when the same label is set twice in a row.
+	 * Clear a status column, then set it to Send. Clearing first means the
+	 * "changes to Send" automation fires even if the last one never reset it.
 	 *
-	 * @param string      $contact_id All Contacts item ID.
-	 * @param string      $label      VD Email label.
-	 * @param string|null $link       Private guest link.
+	 * @param array  $board   Board config.
+	 * @param string $item_id Item ID.
+	 * @param string $column  Status column ID.
 	 */
-	private static function send_contact_email( $contact_id, $label, $link = null ) {
-		$board  = Config\board( 'all_contacts' );
-		$column = Config\column( 'all_contacts', 'vd_email' );
+	private static function trigger( array $board, $item_id, $column ) {
 		if ( '' === $column ) {
 			return;
 		}
-		if ( $link ) {
-			Monday::update_item( $board, $contact_id, array( Config\column( 'all_contacts', 'guest_link' ) => Monday::link( $link, 'Register my guests' ) ) );
-		}
-		Monday::update_item( $board, $contact_id, array( $column => null ) );
-		Monday::update_item( $board, $contact_id, array( $column => Monday::status( $label ) ) );
+		Monday::update_item( $board, $item_id, array( $column => null ) );
+		Monday::update_item( $board, $item_id, array( $column => Monday::status( 'Send' ) ) );
 	}
 
 	/**

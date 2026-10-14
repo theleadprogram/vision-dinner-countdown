@@ -122,6 +122,8 @@ body:has(.lvd-page) { overflow-x: clip; }
 .lvd .lvd-input.is-invalid { border-color: var(--red); }
 .lvd .lvd-error { font-size: 13px; color: var(--red-text); }
 .lvd .lvd-note { font-size: 13px; color: var(--body); }
+.lvd .lvd-hint { font-size: 13px; color: var(--sand-text); }
+.lvd-page .lvd-hint__fix { background: transparent !important; border: 0 !important; padding: 0 !important; margin: 0 !important; font: 700 13px/1.4 var(--sans) !important; color: var(--red) !important; text-decoration: underline !important; text-transform: none !important; letter-spacing: 0 !important; box-shadow: none !important; cursor: pointer; min-height: 0 !important; }
 .lvd .lvd-note--sand { color: var(--sand-text); }
 .lvd .lvd-hp { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 

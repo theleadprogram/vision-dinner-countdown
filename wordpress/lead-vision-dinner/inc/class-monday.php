@@ -65,9 +65,14 @@ class Monday {
 		$body = json_decode( (string) wp_remote_retrieve_body( $response ), true );
 
 		if ( ! empty( $body['errors'] ) || ! empty( $body['error_message'] ) ) {
-			$message = ! empty( $body['errors'] )
-				? wp_json_encode( $body['errors'] )
-				: (string) $body['error_message'];
+			$message = (string) ( isset( $body['error_message'] ) ? $body['error_message'] : '' );
+			if ( ! empty( $body['errors'] ) ) {
+				$parts = array();
+				foreach ( (array) $body['errors'] as $error ) {
+					$parts[] = is_array( $error ) && isset( $error['message'] ) ? (string) $error['message'] : wp_json_encode( $error );
+				}
+				$message = implode( '; ', $parts );
+			}
 			throw new Monday_Exception( "Monday.com error ({$code}): {$message}" );
 		}
 
@@ -240,6 +245,24 @@ class Monday {
 			}
 		}
 		return '';
+	}
+
+	/**
+	 * Selected label ids of a dropdown column, read from its raw value
+	 * ({"ids":[14,9]}). Needs `value` in the column_values selection.
+	 *
+	 * @param array  $item   Item with column_values { id text value }.
+	 * @param string $column Column ID.
+	 * @return int[]
+	 */
+	public static function dropdown_ids( array $item, $column ) {
+		foreach ( isset( $item['column_values'] ) ? $item['column_values'] : array() as $cv ) {
+			if ( $cv['id'] === $column ) {
+				$value = isset( $cv['value'] ) ? json_decode( (string) $cv['value'], true ) : null;
+				return isset( $value['ids'] ) ? array_values( array_map( 'intval', (array) $value['ids'] ) ) : array();
+			}
+		}
+		return array();
 	}
 
 	/**

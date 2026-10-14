@@ -139,6 +139,72 @@
 		};
 	}
 
+	/* ---------- "Did you mean gmail.com?" ---------- */
+
+	// Real domains people use. An exact match is never questioned.
+	var DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'me.com', 'mac.com',
+		'live.com', 'msn.com', 'comcast.net', 'sbcglobal.net', 'att.net', 'verizon.net', 'charter.net', 'frontier.com',
+		'windstream.net', 'cox.net', 'bellsouth.net', 'ymail.com', 'rocketmail.com', 'mail.com', 'gmx.com', 'protonmail.com',
+		'proton.me', 'leadcma.org', 'cmalliance.org'];
+
+	function distance(a, b) {
+		var d = [], i, j;
+		for (i = 0; i <= a.length; i++) d[i] = [i];
+		for (j = 0; j <= b.length; j++) d[0][j] = j;
+		for (i = 1; i <= a.length; i++) {
+			for (j = 1; j <= b.length; j++) {
+				d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+				if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+			}
+		}
+		return d[a.length][b.length];
+	}
+
+	/** A corrected address for a likely domain typo, or ''. */
+	function suggestEmail(value) {
+		var at = String(value || '').trim().lastIndexOf('@');
+		if (at < 1) return '';
+		var email = String(value).trim();
+		var local = email.slice(0, at);
+		var domain = email.slice(at + 1).toLowerCase();
+		if (!domain || DOMAINS.indexOf(domain) !== -1) return '';
+		var best = '', bestScore = 3;
+		DOMAINS.forEach(function (d) {
+			var score = distance(domain, d);
+			if (score < bestScore) { bestScore = score; best = d; }
+		});
+		return best && bestScore <= 2 ? local + '@' + best : '';
+	}
+
+	/** Show the hint under any email field in root. */
+	function bindEmailHints(root) {
+		root.addEventListener('focusout', function (e) {
+			var input = e.target;
+			if (!input.matches || !input.matches('input[type="email"]')) return;
+			var field = input.closest('.lvd-field') || input.parentNode;
+			var hint = field.querySelector('.lvd-hint');
+			var suggestion = suggestEmail(input.value);
+			if (!suggestion) {
+				if (hint) hint.remove();
+				return;
+			}
+			if (!hint) {
+				hint = document.createElement('div');
+				hint.className = 'lvd-hint';
+				field.appendChild(hint);
+			}
+			hint.innerHTML = 'Did you mean <button type="button" class="lvd-hint__fix"></button>?';
+			var fix = hint.querySelector('button');
+			fix.textContent = suggestion;
+			fix.addEventListener('click', function () {
+				input.value = suggestion;
+				hint.remove();
+				input.dispatchEvent(new Event('input', { bubbles: true }));
+				input.focus();
+			});
+		});
+	}
+
 	/** Download an .ics for the dinner. */
 	function downloadIcs() {
 		var d = cfg.dinner || {};
@@ -182,6 +248,8 @@
 		bindErrorClearing: bindErrorClearing,
 		busy: busy,
 		downloadIcs: downloadIcs,
+		suggestEmail: suggestEmail,
+		bindEmailHints: bindEmailHints,
 		NUMBERS: NUMBERS
 	};
 })();
