@@ -100,3 +100,13 @@ Met and No reply have no VD Table Leader equivalent and stay on the recruiting b
 - **Seat released** notifies Clint until the Table Leader Coordinator is named.
 - **Live-call registration is built (decision 7).** Private Register links on the recruiting board, no login. Open items: the build-order tests for VD Table Leader automations still apply after the waves.
 - **New contacts go straight into All LEAD Contacts**, never the Incoming Form Group, whose LEAD Learn intake automation set Student Status. New contacts get Marketing Status = Marketing contact; existing contacts only when it is blank.
+
+## Addendum, October 15, 2026 (plugin 1.6.0)
+
+- **All dinner boards live in the CRM workspace Fundraising (18019263)**, with the Countdown and Logbook. The work-management Fundraising workspace can be archived once nothing else in it is needed.
+- **One email per person.** A +1 and every guest need their own email; the shared-household rule of October 14 is withdrawn. Couples get two confirmations and two sets of reminders.
+- **Fundraising Campaigns replaces the dinner labels in Contact Type.** Registrants get "2027 March Vision Dinner"; Contact Type is not written, and the per-dinner Contact Type labels were deleted.
+- **Marketing Status:** blank becomes Marketing contact; Unsubscribed or Not marketing contact are left alone and Clint is notified in Monday.
+- **The dinner boards mirror All Contacts** (mobile, church, location). Email and first name stay as plain columns for the email automations.
+- **An email that All Contacts has under a different first name** is linked without changing that contact; a note asks for a check.
+- **Table Leaders can edit a guest's full record** after a confirmation listing the changes; an email belonging to another contact is refused.

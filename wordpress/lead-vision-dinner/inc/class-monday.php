@@ -234,6 +234,9 @@ class Monday {
 	/**
 	 * Pull one column's display text out of an item's column_values.
 	 *
+	 * Mirror columns have no text; their value comes back as display_value
+	 * (select it with `... on MirrorValue { display_value }`).
+	 *
 	 * @param array  $item   Item with column_values { id text value }.
 	 * @param string $column Column ID.
 	 * @return string
@@ -241,10 +244,31 @@ class Monday {
 	public static function text( array $item, $column ) {
 		foreach ( isset( $item['column_values'] ) ? $item['column_values'] : array() as $cv ) {
 			if ( $cv['id'] === $column ) {
-				return isset( $cv['text'] ) ? (string) $cv['text'] : '';
+				if ( isset( $cv['text'] ) && '' !== (string) $cv['text'] ) {
+					return (string) $cv['text'];
+				}
+				return isset( $cv['display_value'] ) ? (string) $cv['display_value'] : '';
 			}
 		}
 		return '';
+	}
+
+	/**
+	 * A Monday notification (the bell) to one person about an item.
+	 *
+	 * @param string $user_id Monday user ID.
+	 * @param string $item_id Item the notification links to.
+	 * @param string $text    Message.
+	 */
+	public static function notify( $user_id, $item_id, $text ) {
+		self::call(
+			'mutation ($user: ID!, $item: ID!, $text: String!) { create_notification(user_id: $user, target_id: $item, text: $text, target_type: Project) { text } }',
+			array(
+				'user' => (string) $user_id,
+				'item' => (string) $item_id,
+				'text' => $text,
+			)
+		);
 	}
 
 	/**

@@ -242,7 +242,7 @@
 		if (v.plus_one) {
 			if (!v.plus_first) errors.plus_first = 'Enter their first name.';
 			if (!v.plus_last) errors.plus_last = 'Enter their last name.';
-			if (!v.plus_email) errors.plus_email = 'Enter their email. It can be the same as yours.';
+			if (!v.plus_email || v.plus_email.toLowerCase() === (v.email || '').toLowerCase()) errors.plus_email = L.OWN_EMAIL;
 			else if (!L.EMAIL.test(v.plus_email)) errors.plus_email = 'Enter a valid email address.';
 		}
 		return errors;

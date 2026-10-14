@@ -29,7 +29,7 @@ It follows the same pattern as the LEAD Learn forms (`theleadprogram/lead-monday
 
 ## Monday.com boards
 
-Since version 1.5.0 the boards are in **All LEAD Contacts › Vision Dinner – March 2027**, next to All Contacts, the way LEAD - Africa sits. Their IDs are in `dinners/2027-03.json` under `monday.boards`. The earlier copies stay in **Fundraising › Vision Dinner – March 2027** as they were (Clint, Christina and Brigette's test registrations are there); the website no longer writes to them. The Countdown board stays in Fundraising.
+All five boards (Guests, Table Leaders, Recruiting, Countdown, Logbook) are in the CRM workspace **Fundraising › Vision Dinner – March 2027**. Their IDs are in `dinners/2027-03.json` under `monday.boards`; moving a board doesn't change its ID, so the website keeps working through moves.
 
 | Board | One item per | Notes |
 |---|---|---|
@@ -57,20 +57,22 @@ How a seat is counted: a seat is anyone connected to the Table Leader whose Stat
 
 See `docs/vision-dinner-data-model-decisions.md` for the decisions behind this.
 
-**Every registrant must give an email**: the registrant, a +1, and a guest a Table Leader adds. Each registrant gets an All Contacts record, matched by email, linked through the Guests board's **Contact** column. The Table Leaders item's **Contact** column links to the person who registered.
+**Every person has their own email**: the registrant, a +1, and a guest a Table Leader adds. A +1 can't use the registrant's email, and an email already registered for this dinner by someone with a different first name is refused ("That email belongs to someone else."). Someone without an email is told to call 1-866-LEADCMA.
 
-- **No contact with that email:** one is created in **All LEAD Contacts**. Not in "Incoming Form Group (do not delete)": that group runs the LEAD Learn intake automation, which replaces Contact Type with LEAD Community, sets Student Status and adds a Student Journey item.
-- **Contact exists (same first name):** the registration is trusted as typed. Name, mobile, church and address (written to **Location** as one line) are written to the contact. Blank fields never erase data. **The email is never changed.**
-- **Shared email (a different first name already owns it):** this is a household sharing one inbox. The person gets their own Guests item, tied by Party ID, and is never merged with the email owner. They're added to the owner's **Spouse Name**, and their Guests item isn't linked to that contact; a note says why. A +1 who shares the registrant's email gets no second confirmation.
-- **Contact Type is written by label id, never by name.** The site adds **44, March 2027 Vision Dinner** (`contact_type_id` in the dinner file) and keeps every other current value. Retired labels (26) can't be written and drop off.
-- **46 March 2027 Vision Donor and 14 Donor** come from the gift step, never the form.
-- **Marketing Status** is set to **Marketing contact** on new contacts, and on existing contacts only when it's blank. Unsubscribed and Not marketing contact are never overwritten.
-- **Student Status, VD Email, VD Guest Link and the recruiting columns are never written.**
+Each registrant is linked automatically, through the dinner boards' **Contact** column, to their All Contacts record, matched by email:
+
+- **No contact with that email:** one is created in All LEAD Contacts.
+- **Contact exists:** the registration is trusted as typed. Name, mobile, church and address (one line, in **Location**) are written to the contact. Blank fields never erase data. The email is never changed by a registration.
+- **Contact exists under a different first name:** they're linked to it, but its name and details are left alone, and a note on their Guests item asks you to check.
+- **Fundraising Campaigns** gets **2027 March Vision Dinner** (`campaign_id` in the dinner file), added to any campaigns they already have. **Contact Type is never written.**
+- **Marketing Status**: blank becomes **Marketing contact**. Unsubscribed and Not marketing contact are left as they are, and Clint gets a Monday notification naming the person.
+- **Mirrors:** Mobile, Church and Location on Guests, Table Leaders and Recruiting are mirrors of the contact, so editing All Contacts updates the dinner boards. Email and First name stay as plain columns on Guests and Table Leaders, because the email automations send from them. The old typed columns are renamed "Old – …" and can be deleted.
+- **Table Leaders can edit a guest's whole record** from their private page. The page lists what's changing and asks them to confirm; the changes go to the guest's contact, the email included, unless the new email belongs to someone else.
 - **If anything fails,** the registration still goes through, and a note on the Guests item says what Monday reported.
 
 ### Rules the site follows
 
-- **One record per person.** If the email is already on the Guests board, that item is updated instead of a new one being created. A spouse/+1 without an email is matched by Party ID.
+- **One record per person.** If the email is already on the Guests board under the same first name, that item is updated instead of a new one being created.
 - **Guest picks a Table Leader:** connected to that Table Leader, Seating = Assigned. **"Please seat me":** no Table Leader, Seating = Needs a seat.
 - **Table Leader registers:** creates a Table Leaders item (Status Registered, a new 160-bit token) and a Guests item (Role = Table Leader) connected to it. Their spouse becomes a Spouse/+1 item at the same table.
 - **Returning Table Leader** (the email is already on the Table Leaders board): **nothing is changed**, because anyone can type an email. The site emails the private link to the address on file (the same as "Lost your link?") and adds a note on their item. The thank-you screen says they're already registered and that details are updated through the Table Leader Coordinator.

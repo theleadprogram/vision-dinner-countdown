@@ -22,12 +22,12 @@
   ],
   "monday": {
     "workspace": {
-      "name": "Fundraising",
-      "id": 17946146
+      "name": "Fundraising (CRM)",
+      "id": 18019263
     },
     "folder": {
       "name": "Vision Dinner – March 2027",
-      "id": 21599326
+      "id": 21636035
     },
     "boards": {
       "countdown": {
@@ -70,7 +70,7 @@
         }
       },
       "guests": {
-        "name": "Vision Dinner Guests – March 2027",
+        "name": "Vision Dinner Guests",
         "id": 18435367875,
         "url": "https://the-lead-program.monday.com/boards/18435367875",
         "group": "topics",
@@ -81,9 +81,9 @@
           "seating": "color_mm80fs27",
           "party_id": "text_mm80p67b",
           "email": "email_mm80p15p",
-          "mobile": "phone_mm80t2bx",
-          "mailing_address": "long_text_mm80ract",
-          "church": "text_mm80f4eq",
+          "mobile": "m_mobile",
+          "mailing_address": "m_location",
+          "church": "m_church",
           "dietary": "text_mm80sb94",
           "accessibility": "text_mm80vcts",
           "table_leader_interest": "boolean_mm804fnx",
@@ -97,18 +97,19 @@
         "previous": {
           "id": 18434896459,
           "note": "Fundraising workspace copy, used until plugin 1.5.0. Kept as it was; the website no longer writes to it."
-        }
+        },
+        "mirror_note": "Mobile, Church and Mailing address (Location) are mirrors of the linked All Contacts record and are never written. Email and First name stay as plain columns because the email automations send from them. The old typed columns are renamed \"Old – …\"."
       },
       "table_leaders": {
-        "name": "Table Leaders – March 2027",
+        "name": "Vision Dinner Table Leaders",
         "id": 18435367973,
         "url": "https://the-lead-program.monday.com/boards/18435367973",
         "group": "topics",
         "columns": {
           "status": "color_mm80gw8f",
-          "church": "text_mm80wc7y",
+          "church": "m_church",
           "email": "email_mm806cd8",
-          "mobile": "phone_mm80s326",
+          "mobile": "m_mobile",
           "guests": "board_relation_mm80tzk",
           "seats_filled": "numeric_mm8052vx",
           "seats_left": "formula_mm80bt8p",
@@ -117,7 +118,8 @@
           "coordinator": "multiple_person_mm80f9zx",
           "first_name": "text_mm81sjpt",
           "link_email": "color_mm80pnmw",
-          "contact": "board_relation_mm848whq"
+          "contact": "board_relation_mm848whq",
+          "location": "m_location"
         },
         "previous": {
           "id": 18434896452,
@@ -136,9 +138,11 @@
           "stage": "color_mm822z42",
           "contact": "board_relation_mm82exjb",
           "email": "email_mm82eyjb",
-          "mobile": "phone_mm82ga4t",
+          "mobile": "m_mobile",
           "register_token": "reg_token",
-          "register_link": "reg_link"
+          "register_link": "reg_link",
+          "church": "m_church",
+          "location": "m_location"
         },
         "stage_yes": "Yes"
       },
@@ -154,24 +158,20 @@
           "last_name": "text_mkx5p9v6",
           "mobile": "text_mkx6hv3r",
           "church": "text_mkx6dz3w",
-          "contact_type": "dropdown_mkxdjrrb",
           "guests_link": "board_relation_mm81mj1p",
           "location": "text_mkx6jzke",
           "spouse_name": "text_mkx6vv08",
-          "marketing_status": "contacts0967c043ba"
+          "marketing_status": "contacts0967c043ba",
+          "campaigns": "dropdown_mm84zpge"
         },
-        "sequences": {
-          "guest_confirmation": "875508e2-7812-4ca1-912f-12d4ddfae369",
-          "tl_confirmation": "c5afe23a-9fcc-4b01-a36b-151b4075f93c",
-          "tl_link": "5a186ca9-a59b-4c07-bef0-44c097fc4675"
-        },
-        "contact_type_id": 44,
-        "contact_type_note": "Contact Type is written by label id. 44 = March 2027 Vision Dinner (added at registration). 46 = March 2027 Vision Donor and 14 = Donor are added when someone gives, not by the form. 26 (Vision Dinner Guest) is retired and must not be written.",
         "marketing_status_index": 1,
         "marketing_status_note": "Marketing Status index 1 = Marketing contact. Set on new contacts, and on existing contacts only when Marketing Status is blank, so Unsubscribed and Not marketing contact are never overwritten.",
-        "sequences_note": "These three sequences are inactive and will be retired (decision 4); the website no longer uses them."
+        "campaign_id": 4,
+        "campaign_note": "Fundraising Campaigns label 4 = 2027 March Vision Dinner, added (never replacing other campaigns) to every registrant. Contact Type is not written.",
+        "marketing_note": "Marketing Status: blank becomes Marketing contact. Unsubscribed and Not marketing contact are left as they are and notify_user_id gets a Monday notification.",
+        "notify_user_id": 72942235
       }
     },
-    "workspace_note": "Guests, Table Leaders and Recruiting live in All LEAD Contacts (13076717), folder Vision Dinner – March 2027 (21636035), from plugin 1.5.0. The Countdown board stays in Fundraising."
+    "workspace_note": "Since October 15, 2026 every Vision Dinner board (Guests, Table Leaders, Recruiting, Countdown, Logbook) is in the CRM workspace Fundraising (18019263). Board IDs did not change."
   }
 }

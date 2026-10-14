@@ -242,6 +242,7 @@
 		phoneDigits: phoneDigits,
 		bindPhone: bindPhone,
 		EMAIL: EMAIL,
+		OWN_EMAIL: 'Each guest needs their own email for their confirmation and reminders. If your guest doesn\'t have one, call 1-866-LEADCMA and we\'ll register them.',
 		values: values,
 		showErrors: showErrors,
 		clearErrors: clearErrors,

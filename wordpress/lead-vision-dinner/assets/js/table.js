@@ -149,6 +149,18 @@
 			var v = L.values(form);
 			var errors = validateGuest(v);
 			if (Object.keys(errors).length) return L.showErrors(form, errors);
+			// Changes go to the guest's record in LEAD's contacts: say exactly
+			// what will change and ask first.
+			var labels = { first: 'first name', last: 'last name', email: 'email', phone: 'mobile phone', dietary: 'dietary needs', access: 'accessibility needs' };
+			var changes = Object.keys(labels).filter(function (key) {
+				var before = key === 'phone' ? L.phoneDigits(g.phone || '') : String(g[key] || '').trim();
+				var after = key === 'phone' ? L.phoneDigits(v.phone || '') : String(v[key] || '').trim();
+				return before.toLowerCase() !== after.toLowerCase();
+			}).map(function (key) {
+				return '- ' + labels[key] + ': "' + (g[key] || '(blank)') + '" to "' + (v[key] || '(blank)') + '"';
+			});
+			if (!changes.length) { state.editing = null; render(state.table); return; }
+			if (!window.confirm('You are changing ' + g.first + '\'s:\n\n' + changes.join('\n') + '\n\nThis updates their record with LEAD. Do you really want to do that?')) return;
 			v.t = token;
 			var restore = L.busy(form.querySelector('[data-submit]'));
 			send('table/guests/' + g.id, v, form, restore);
@@ -166,7 +178,7 @@
 	function validateGuest(v) {
 		var errors = {};
 		if (!v.first) errors.first = 'Enter a first name.';
-		if (!v.email) errors.email = 'Enter their email. A couple can share one.';
+		if (!v.email) errors.email = L.OWN_EMAIL;
 		else if (!L.EMAIL.test(v.email)) errors.email = 'Enter a valid email address.';
 		if (v.phone && L.phoneDigits(v.phone).length !== 10) errors.phone = 'Enter a 10-digit mobile number.';
 		return errors;
