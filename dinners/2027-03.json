@@ -3,6 +3,10 @@
   "label": "March 2027",
   "dinner_date": "2027-03-06",
   "date_status": "Confirmed. Venue confirmed: The Woodland, Strongsville, OH (address and contact details pending).",
+  "venue": {
+    "name": "The Woodland",
+    "city": "Strongsville, OH"
+  },
   "adjustments": [
     {
       "type": "off_week",

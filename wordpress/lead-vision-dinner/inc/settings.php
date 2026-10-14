@@ -29,8 +29,8 @@ function fields() {
 		'venue'       => array(
 			'title'  => 'Venue',
 			'fields' => array(
-				'venue_name'    => array( 'Venue name', 'Shown as "Where" on the page and thank-you screen. Leave blank to show "Venue to be announced".' ),
-				'venue_address' => array( 'Venue address', 'One line, e.g. "1 Main St, Akron, OH 44308".' ),
+				'venue_name'    => array( 'Venue name', 'Shown as "Where" on the page and thank-you screen. Leave blank to use the venue in the dinner file.' ),
+				'venue_address' => array( 'Venue address', 'One line, e.g. "1 Main St, Akron, OH 44308". Leave blank to show the city from the dinner file.' ),
 				'map_url'       => array( 'Directions link', 'Optional. A Google Maps link. Builds "Get directions" when set.', 'url' ),
 			),
 		),

@@ -33,8 +33,13 @@ function facts() {
 	$start = $day ? date_create_immutable( $date . ' ' . Settings\get( 'reception_time' ), $tz ) : false;
 	$end   = $day ? date_create_immutable( $date . ' ' . Settings\get( 'end_time' ), $tz ) : false;
 
+	// Settings win; the dinner file's venue fills in until they're set.
+	$file    = Config\dinner()['venue'] ?? array();
 	$venue   = Settings\get( 'venue_name' );
+	$venue   = '' !== $venue ? $venue : (string) ( $file['name'] ?? '' );
 	$address = Settings\get( 'venue_address' );
+	$address = '' !== $address ? $address : (string) ( $file['city'] ?? '' );
+	$city    = (string) ( $file['city'] ?? '' );
 
 	return array(
 		'dateLong'  => $day ? $day->format( 'l, F j, Y' ) : '',
@@ -44,6 +49,7 @@ function facts() {
 		'venue'     => '' !== $venue ? $venue : 'Venue to be announced',
 		'venueSet'  => '' !== $venue,
 		'address'   => $address,
+		'area'      => '' !== $city ? $city : 'Cleveland–Akron area',
 		'mapUrl'    => Settings\get( 'map_url' ),
 		'icsStart'  => $start ? $start->format( 'Ymd\THis' ) : '',
 		'icsEnd'    => $end ? $end->format( 'Ymd\THis' ) : '',
@@ -130,7 +136,7 @@ function register_page() {
 							<div class="lvd-eyebrow lvd-eyebrow--sand">LEAD Africa Vision Dinner</div>
 							<div class="lvd-hero__h1">An evening of vision.</div>
 							<div class="lvd-rule"></div>
-							<div class="lvd-hero__lines"><?php echo esc_html( $f['dateLong'] . ' · ' . $f['reception'] ); ?><br><?php echo esc_html( $f['venue'] ); ?> · Cleveland–Akron area</div>
+							<div class="lvd-hero__lines"><?php echo esc_html( $f['dateLong'] . ' · ' . $f['reception'] ); ?><br><?php echo esc_html( $f['venue'] . ' · ' . $f['area'] ); ?></div>
 						</div>
 						<div class="lvd-hero__thanks" data-thanks-headline hidden></div>
 					</div>
@@ -140,7 +146,7 @@ function register_page() {
 						<div class="lvd-rule"></div>
 						<dl class="lvd-facts">
 							<dt>When</dt><dd><?php echo esc_html( $f['dateLong'] ); ?><br>Reception <?php echo esc_html( $f['reception'] ); ?> · Done by <?php echo esc_html( $f['end'] ); ?></dd>
-							<dt>Where</dt><dd><?php echo esc_html( $f['venue'] ); ?><?php if ( '' !== $f['address'] ) : ?><br><?php echo esc_html( $f['address'] ); ?><?php endif; ?><br>Cleveland–Akron area</dd>
+							<dt>Where</dt><dd><?php echo esc_html( $f['venue'] ); ?><?php if ( '' !== $f['address'] ) : ?><br><?php echo esc_html( $f['address'] ); ?><?php else : ?><br>Cleveland–Akron area<?php endif; ?></dd>
 							<dt>Cost</dt><dd>None. Dinner is our gift to you.</dd>
 							<dt>Attire</dt><dd>Business attire strongly suggested. Men: suit or jacket and tie. Women: dress or pants outfit.</dd>
 						</dl>
