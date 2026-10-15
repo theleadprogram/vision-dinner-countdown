@@ -78,7 +78,7 @@ Dear [First name],
 
 We're glad you're joining us for the LEAD Africa Vision Dinner.
 
-**When:** Saturday, March 6, 2027. Reception at [reception time].
+**When:** Saturday, March 6, 2027. Reception at 5:45 pm.
 **Where:** The Woodland, Strongsville, OH.
 **Cost:** None. Dinner is our gift to you.
 
@@ -259,7 +259,7 @@ Dear [First name],
 
 We're four weeks from the LEAD Africa Vision Dinner. Here is the evening at a glance:
 
-- **[reception time]** Reception
+- **5:45 pm** Reception
 - **[dinner time]** Dinner
 - **[program time]** Program: stories, a short update and our keynote speaker
 - **By [end time]** Done
@@ -302,7 +302,7 @@ Dear [First name],
 
 The dinner is a week from Saturday. A few details to help you plan:
 
-**When:** Saturday, March 6. Reception at [reception time]. Done by [end time].
+**When:** Saturday, March 6. Reception at 5:45 pm. Done by [end time].
 **Where:** The Woodland, [street address], Strongsville, OH. [Parking note]
 **Attire:** Business attire is strongly suggested: Men – Suit or Jacket/Tie. Women – Dress or Pants Outfit.
 **Can't come after all?** Please reply to this email, or tell the person who invited you, so we can plan the meal well.
@@ -320,6 +320,8 @@ LEAD
 Six weekly coaching emails, counted from the day each Table Leader is enrolled. They cover the steps every Table Leader takes, whenever they join.
 
 ### Setting it up
+
+- **Built in Monday** as "Vision Dinner 2027 – Table Leader coaching" on All Contacts, sending from clint@leadcma.org. It was created inactive. Before activating it, replace `[First name]` in each email with the First name column using the **{ } Columns** picker.
 
 - **Board:** All Contacts, where your other sequences run.
 - **Enroll** each Table Leader when they register. That may be done by hand, or automatically when their VD Table Leader column changes to Yes.
@@ -461,8 +463,6 @@ LEAD
 Dear [First name],
 
 By now you've invited some of the people on your list. This week, follow up with anyone who hasn't answered yet: "Have you had a chance to look at March 6? I'd love to have you at my table."
-
-[Optional: a short, true story of one guest at a past LEAD dinner, or of a leader whose formation began because someone gave. Use a real story with permission, or leave this paragraph out.]
 
 Then ask the next person on your list. Register each yes the same day with your private link. Your table page shows everyone registered so far, so you can see where things stand.
 
