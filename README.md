@@ -9,7 +9,9 @@ The tasks follow the Fundraising Masterminds Perfect Vision Dinner model (21 wee
 | File | What it holds |
 |---|---|
 | `countdown.json` | The task template. It is the same for every dinner: 138 tasks, each with an `id`, name, `weeks_out`, area, roles and details. It contains no dates. |
-| `dinners/YYYY-MM.json` | One file per dinner: the dinner date, any schedule adjustments, and the Monday.com IDs for that dinner's workspace, folder, board, columns and groups. |
+| `dinners/YYYY-MM.json` | One file per dinner: the dinner date, any schedule adjustments, and the Monday.com IDs for that dinner's workspace, folder, boards (countdown, guests, Table Leaders), columns and groups. |
+| `wordpress/` | The registration page at leadcma.org/dinner, a WordPress plugin that writes to the guest and Table Leader boards. See `wordpress/README.md`. |
+| `LEAD Africa Vision Dinner designs.zip` | The design handoff the registration page was built from. |
 
 ## How due dates work
 
@@ -51,7 +53,7 @@ On the board, moved tasks carry their new week in the Weeks Out column, and thei
 
 ## The Monday.com board
 
-Each dinner gets a folder in the **Fundraising** workspace (for example, "Vision Dinner – March 2027") with a board named **Vision Dinner Countdown – \<Month Year\>**. The guest and Table Leader boards for registration go in the same folder.
+Each dinner gets a folder in the **Fundraising** workspace (for example, "Vision Dinner – March 2027") with a board named **Vision Dinner Countdown – \<Month Year\>**. The guest and Table Leader boards for registration (**Vision Dinner Guests – \<Month Year\>** and **Table Leaders – \<Month Year\>**) go in the same folder; their columns are described in `wordpress/README.md`.
 
 | Column | Type | Notes |
 |---|---|---|
