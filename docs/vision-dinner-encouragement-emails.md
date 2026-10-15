@@ -23,7 +23,7 @@ The two kinds of timing do different jobs:
 Every registrant's contact gets the Fundraising Campaigns label **2027 March Vision Dinner** (plugin 1.6.0, confirmed in Monday). That includes guests, Table Leaders, every Spouse/+1, and guests a Table Leader adds. Use that label as the campaign segment.
 
 - **Unsubscribed contacts are left alone.** The site sets Marketing Status to Marketing contact only on new contacts and on contacts where it's blank. Someone who unsubscribed won't get the campaign, but still gets their confirmation and dinner-week reminders.
-- **A released seat keeps the label.** Someone who cancels would keep receiving the campaign. Remove the label by hand when a seat is released, or have the site do it (not built yet).
+- **A released seat loses the label** (plugin 1.6.1). When a Table Leader releases a guest from their private link, the site removes 2027 March Vision Dinner from that guest's contact, so the campaign stops. A seat set to Cancelled by hand in Monday keeps the label; remove it by hand.
 - **Check whether the segment is re-checked at each send.** If Campaigns fixes the audience when the campaign is created, late registrants would be missed. In that case refresh the segment before each send.
 
 ### Send dates

@@ -64,7 +64,8 @@ Each registrant is linked automatically, through the dinner boards' **Contact** 
 - **No contact with that email:** one is created in All LEAD Contacts.
 - **Contact exists:** the registration is trusted as typed. Name, mobile, church and address (one line, in **Location**) are written to the contact. Blank fields never erase data. The email is never changed by a registration.
 - **Contact exists under a different first name:** they're linked to it, but its name and details are left alone, and a note on their Guests item asks you to check.
-- **Fundraising Campaigns** gets **2027 March Vision Dinner** (`campaign_id` in the dinner file), added to any campaigns they already have. **Contact Type is never written.**
+- **Fundraising Campaigns** gets **2027 March Vision Dinner** (`campaign_id` in the dinner file), added to any campaigns they already have. It is the audience for the dinner campaign in monday campaigns. **Contact Type is never written.**
+- **Released seat:** when a Table Leader releases a guest from their private link, the site takes **2027 March Vision Dinner** off that guest's contact and leaves their other campaigns. It stays if the same email still has a seat that isn't Cancelled. Registering again adds it back. A seat set to Cancelled by hand in Monday keeps the label; remove it by hand.
 - **Marketing Status**: blank becomes **Marketing contact**. Unsubscribed and Not marketing contact are left as they are, and Clint gets a Monday notification naming the person.
 - **Mirrors:** Mobile, Church and Location on Guests, Table Leaders and Recruiting are mirrors of the contact, so editing All Contacts updates the dinner boards. Email and First name stay as plain columns on Guests and Table Leaders, because the email automations send from them. The old typed columns are renamed "Old – …" and can be deleted.
 - **Table Leaders can edit a guest's whole record** from their private page. The page lists what's changing and asks them to confirm; the changes go to the guest's contact, the email included, unless the new email belongs to someone else.
@@ -77,7 +78,7 @@ Each registrant is linked automatically, through the dinner boards' **Contact** 
 - **Table Leader registers:** creates a Table Leaders item (Status Registered, a new 160-bit token) and a Guests item (Role = Table Leader) connected to it. Their spouse becomes a Spouse/+1 item at the same table.
 - **Returning Table Leader** (the email is already on the Table Leaders board): **nothing is changed**, because anyone can type an email. The site emails the private link to the address on file (the same as "Lost your link?") and adds a note on their item. The thank-you screen says they're already registered and that details are updated through the Table Leader Coordinator.
 - **Private link:** the guest page accepts only a 40-character token that matches a Table Leader whose Status isn't Stepped back. To revoke a link, clear the Guest link token (or set Stepped back). "Lost your link?" then issues a new one.
-- **Guests added from the private link:** Registered by = Table Leader link. **Edit** re-sends the confirmation. **Release** sets Status = Cancelled and posts an update on the item.
+- **Guests added from the private link:** Registered by = Table Leader link. **Edit** re-sends the confirmation. **Release** sets Status = Cancelled, posts an update on the item, and takes the dinner off the guest's Fundraising Campaigns.
 - **Spam:** a hidden honeypot field, plus per-IP limits (12 registrations an hour, 5 link requests an hour, 60 table changes an hour).
 
 ## Emails

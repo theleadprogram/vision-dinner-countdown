@@ -518,6 +518,7 @@ class Registry {
 			self::without_dinner_date( array( Config\column( 'guests', 'status' ) => Monday::status( 'Cancelled' ) ) )
 		);
 		Monday::add_update( $guest['id'], 'Seat released by ' . $leader['name'] . ' from their private guest link.' );
+		self::drop_campaign( $guest );
 
 		self::recount( array( $leader['id'] ) );
 		return self::table( $token );
@@ -1103,6 +1104,45 @@ class Registry {
 			$values[ $mkt_col ] = $mkt;
 		}
 		return Monday::create_item( $board, '' !== $name ? $name : $person['email'], $values );
+	}
+
+	/**
+	 * A released seat: take the dinner's Fundraising Campaign off the guest's
+	 * contact, so the dinner campaign stops reaching them. Their other
+	 * campaigns stay. Kept when the same email still holds a seat at this
+	 * dinner. Registering again adds it back. Never throws; a failure leaves
+	 * a note.
+	 *
+	 * @param array $guest Shaped guest (shape_guest()).
+	 */
+	private static function drop_campaign( array $guest ) {
+		$board    = Config\board( 'all_contacts' );
+		$col      = Config\column( 'all_contacts', 'campaigns' );
+		$campaign = $board && isset( $board['campaign_id'] ) ? (int) $board['campaign_id'] : 0;
+		if ( ! $campaign || '' === $col || empty( $guest['contact_ids'] ) ) {
+			return;
+		}
+
+		try {
+			foreach ( self::find_guests( 'email', $guest['email'] ) as $other ) {
+				if ( $other['id'] !== $guest['id'] && 'Cancelled' !== $other['status'] ) {
+					return;
+				}
+			}
+
+			foreach ( Monday::items( $guest['contact_ids'], self::contact_fields() ) as $contact ) {
+				$ids = Monday::dropdown_ids( $contact, $col );
+				if ( ! in_array( $campaign, $ids, true ) ) {
+					continue;
+				}
+				// Writing a dropdown replaces it, so send the others back
+				// (retired labels drop off); null clears it.
+				$keep = array_values( array_diff( array_intersect( $ids, self::active_label_ids( $col ) ), array( $campaign ) ) );
+				Monday::update_item( $board, $contact['id'], array( $col => $keep ? array( 'ids' => $keep ) : null ) );
+			}
+		} catch ( Monday_Exception $e ) {
+			self::note_failure( $guest['id'], 'The website could not take this dinner off their Fundraising Campaigns in All Contacts. Please remove it by hand.', $e );
+		}
 	}
 
 	/**
